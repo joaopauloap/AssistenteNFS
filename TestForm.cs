@@ -13,6 +13,7 @@ using System.Collections.Generic;
 
 namespace Sample.Winform
 {
+    
     public partial class TestForm : Form
     {
         TwainSession _twain;
@@ -495,8 +496,9 @@ namespace Sample.Winform
 
         }
 
-        private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
+        private void tableLayoutPanel1_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
         {
+            ///process mouse event
             if (e.Delta > 0)
             {
                 // aumentar o zoom
@@ -507,6 +509,10 @@ namespace Sample.Winform
                 // diminuir o zoom
                 pictureBox1.Size = new Size((int)(pictureBox1.Width / 1.1), (int)(pictureBox1.Height / 1.1));
             }
+        }
+
+        private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
+        {
         }
     }
 }
