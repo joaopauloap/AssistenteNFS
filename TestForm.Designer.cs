@@ -60,8 +60,10 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox1.InitialImage = null;
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(350, 461);
@@ -99,12 +101,12 @@
             // sepSourceList
             // 
             this.sepSourceList.Name = "sepSourceList";
-            this.sepSourceList.Size = new System.Drawing.Size(151, 6);
+            this.sepSourceList.Size = new System.Drawing.Size(177, 6);
             // 
             // reloadSourcesListToolStripMenuItem
             // 
             this.reloadSourcesListToolStripMenuItem.Name = "reloadSourcesListToolStripMenuItem";
-            this.reloadSourcesListToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.reloadSourcesListToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.reloadSourcesListToolStripMenuItem.Text = "Recarregar lista";
             this.reloadSourcesListToolStripMenuItem.Click += new System.EventHandler(this.reloadSourcesListToolStripMenuItem_Click);
             // 
@@ -143,6 +145,7 @@
             // textBox1
             // 
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(359, 3);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
@@ -168,6 +171,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboDPI.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboDPI.FormattingEnabled = true;
+            this.comboDPI.Items.AddRange(new object[] {
+            "300"});
             this.comboDPI.Location = new System.Drawing.Point(18, 19);
             this.comboDPI.Name = "comboDPI";
             this.comboDPI.Size = new System.Drawing.Size(169, 21);
@@ -232,7 +237,7 @@
             this.panelOptions.Controls.Add(this.groupSize, 0, 2);
             this.panelOptions.Controls.Add(this.groupDepth, 0, 1);
             this.panelOptions.Controls.Add(this.groupDPI, 0, 0);
-            this.panelOptions.Controls.Add(this.label1, 0, 4);
+            this.panelOptions.Controls.Add(this.label1, 0, 6);
             this.panelOptions.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelOptions.Location = new System.Drawing.Point(0, 25);
             this.panelOptions.Name = "panelOptions";
@@ -246,12 +251,11 @@
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.panelOptions.Size = new System.Drawing.Size(222, 467);
             this.panelOptions.TabIndex = 3;
-            this.panelOptions.Paint += new System.Windows.Forms.PaintEventHandler(this.panelOptions_Paint);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 195);
+            this.label1.Location = new System.Drawing.Point(3, 260);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(16, 13);
             this.label1.TabIndex = 1;
@@ -264,6 +268,7 @@
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.AutoScroll = true;
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -288,7 +293,7 @@
             this.Controls.Add(this.toolStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TestForm";
-            this.Text = "Assistente NFSe DETRAN AL";
+            this.Text = "Assistente NFS";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.TestForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

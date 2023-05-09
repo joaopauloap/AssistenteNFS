@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Tesseract;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace Sample.Winform
 {
@@ -460,9 +461,6 @@ namespace Sample.Winform
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            Form1 f1 = new Form1();
-            f1.pictureBox1.Image = pictureBox1.Image;
-            f1.Show();
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -476,7 +474,7 @@ namespace Sample.Winform
                 if (saveFileDialog1.FileName != "")
                 {
                     System.IO.FileStream fs = (System.IO.FileStream)saveFileDialog1.OpenFile();
-                    pictureBox1.Image.Save(fs,System.Drawing.Imaging.ImageFormat.Jpeg);
+                    pictureBox1.Image.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
                     fs.Close();
                 }
             }
@@ -485,12 +483,30 @@ namespace Sample.Winform
 
         private void TestForm_Load(object sender, EventArgs e)
         {
-            comboDPI.SelectedItem= 3;
+            foreach (var item in _twain)
+            {
+                if (item.Open() == ReturnCode.Success)
+                {
+                    btnStartCapture.Enabled = true;
+                    LoadSourceCaps();
+                    break;
+                }
+            }
+
         }
 
-        private void panelOptions_Paint(object sender, PaintEventArgs e)
+        private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
         {
-
+            if (e.Delta > 0)
+            {
+                // aumentar o zoom
+                pictureBox1.Size = new Size((int)(pictureBox1.Width * 1.1), (int)(pictureBox1.Height * 1.1));
+            }
+            else
+            {
+                // diminuir o zoom
+                pictureBox1.Size = new Size((int)(pictureBox1.Width / 1.1), (int)(pictureBox1.Height / 1.1));
+            }
         }
     }
 }
