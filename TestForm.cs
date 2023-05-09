@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace Sample.Winform
 {
-    
+
     public partial class TestForm : Form
     {
         TwainSession _twain;
@@ -89,6 +89,7 @@ namespace Sample.Winform
         public TestForm()
         {
             InitializeComponent();
+            this.pictureBox1.MouseWheel += new MouseEventHandler(pictureBox1_MouseWheel);
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -496,23 +497,32 @@ namespace Sample.Winform
 
         }
 
-        private void tableLayoutPanel1_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void pictureBox1_MouseWheel(System.Object sender, MouseEventArgs e)
         {
-            ///process mouse event
-            if (e.Delta > 0)
-            {
-                // aumentar o zoom
-                pictureBox1.Size = new Size((int)(pictureBox1.Width * 1.1), (int)(pictureBox1.Height * 1.1));
-            }
-            else
-            {
-                // diminuir o zoom
-                pictureBox1.Size = new Size((int)(pictureBox1.Width / 1.1), (int)(pictureBox1.Height / 1.1));
-            }
+            //if (e.Delta > 0)
+            //{// aumentar o zoom
+            //    pictureBox1.Size = new Size((int)(pictureBox1.Width * 1.1), (int)(pictureBox1.Height * 1.1));
+            //}
+            //else
+            //{// diminuir o zoom
+            //    pictureBox1.Size = new Size((int)(pictureBox1.Width / 1.1), (int)(pictureBox1.Height / 1.1));
+            //}
+        }
+        private Image CropImage(Image img, Rectangle rect)
+        {
+            return ((Bitmap)img).Clone(rect, img.PixelFormat);
         }
 
-        private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
+            Clipboard.SetText(textBox1.Text);
+            int x = 400;
+            int y = 600;
+            int largura = (int)Math.Round(pictureBox1.Width * 1.5);
+            int altura = (int)Math.Round(pictureBox1.Height * 1.5);
+            Rectangle CropRectangle = new Rectangle(x, y, largura, altura);
+            pictureBox1.Image = CropImage(pictureBox1.Image, CropRectangle);
+
         }
     }
 }

@@ -59,15 +59,5 @@ namespace AssistenteNFS.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap _35e93e6834115ae58afa777274522894 {
-            get {
-                object obj = ResourceManager.GetObject("35e93e6834115ae58afa777274522894", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }
