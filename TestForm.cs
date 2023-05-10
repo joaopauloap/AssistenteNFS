@@ -79,7 +79,6 @@ namespace Sample.Winform
             }
             catch
             {
-                MessageBox.Show("Erro!");
                 textBox1.Text = textOcr;
             }
         }
@@ -516,13 +515,14 @@ namespace Sample.Winform
         private void button2_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(textBox1.Text);
-            int x = 400;
-            int y = 600;
-            int largura = (int)Math.Round(pictureBox1.Width * 1.5);
-            int altura = (int)Math.Round(pictureBox1.Height * 1.5);
+            int x = (int)Math.Round(pictureBox1.Image.Width * 0.1);
+            int y = (int)Math.Round(pictureBox1.Image.Height * 0.1);
+            int largura = (int)Math.Round(pictureBox1.Image.Width * 0.7);
+            int altura = (int)Math.Round(pictureBox1.Image.Height * 0.7);
             Rectangle CropRectangle = new Rectangle(x, y, largura, altura);
             pictureBox1.Image = CropImage(pictureBox1.Image, CropRectangle);
 
         }
+
     }
 }

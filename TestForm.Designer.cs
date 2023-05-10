@@ -34,7 +34,6 @@
             this.btnSources = new System.Windows.Forms.ToolStripDropDownButton();
             this.sepSourceList = new System.Windows.Forms.ToolStripSeparator();
             this.reloadSourcesListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnStartCapture = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.groupDPI = new System.Windows.Forms.GroupBox();
@@ -47,10 +46,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.btnStartCapture = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.groupDPI.SuspendLayout();
@@ -69,7 +69,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(4, 4);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(634, 571);
+            this.pictureBox1.Size = new System.Drawing.Size(610, 567);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
@@ -80,12 +80,11 @@
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnSources,
-            this.btnStartCapture,
             this.toolStripLabel1,
             this.toolStripButton1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1245, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(1245, 31);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -98,7 +97,7 @@
             this.btnSources.Image = ((System.Drawing.Image)(resources.GetObject("btnSources.Image")));
             this.btnSources.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSources.Name = "btnSources";
-            this.btnSources.Size = new System.Drawing.Size(75, 24);
+            this.btnSources.Size = new System.Drawing.Size(75, 28);
             this.btnSources.Text = "Scanner";
             this.btnSources.DropDownOpening += new System.EventHandler(this.btnSources_DropDownOpening);
             // 
@@ -113,17 +112,6 @@
             this.reloadSourcesListToolStripMenuItem.Size = new System.Drawing.Size(195, 26);
             this.reloadSourcesListToolStripMenuItem.Text = "Recarregar lista";
             this.reloadSourcesListToolStripMenuItem.Click += new System.EventHandler(this.reloadSourcesListToolStripMenuItem_Click);
-            // 
-            // btnStartCapture
-            // 
-            this.btnStartCapture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnStartCapture.Enabled = false;
-            this.btnStartCapture.Image = ((System.Drawing.Image)(resources.GetObject("btnStartCapture.Image")));
-            this.btnStartCapture.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnStartCapture.Name = "btnStartCapture";
-            this.btnStartCapture.Size = new System.Drawing.Size(71, 24);
-            this.btnStartCapture.Text = "Escanear";
-            this.btnStartCapture.Click += new System.EventHandler(this.btnStartCapture_Click);
             // 
             // toolStripLabel1
             // 
@@ -155,7 +143,7 @@
             this.groupDPI.Margin = new System.Windows.Forms.Padding(11, 10, 11, 4);
             this.groupDPI.Name = "groupDPI";
             this.groupDPI.Padding = new System.Windows.Forms.Padding(4);
-            this.groupDPI.Size = new System.Drawing.Size(274, 66);
+            this.groupDPI.Size = new System.Drawing.Size(238, 66);
             this.groupDPI.TabIndex = 0;
             this.groupDPI.TabStop = false;
             this.groupDPI.Text = "DPI";
@@ -171,7 +159,7 @@
             this.comboDPI.Location = new System.Drawing.Point(24, 23);
             this.comboDPI.Margin = new System.Windows.Forms.Padding(4);
             this.comboDPI.Name = "comboDPI";
-            this.comboDPI.Size = new System.Drawing.Size(223, 24);
+            this.comboDPI.Size = new System.Drawing.Size(187, 24);
             this.comboDPI.TabIndex = 0;
             this.comboDPI.SelectedIndexChanged += new System.EventHandler(this.comboDPI_SelectedIndexChanged);
             // 
@@ -184,10 +172,10 @@
             this.groupDepth.Margin = new System.Windows.Forms.Padding(11, 10, 11, 4);
             this.groupDepth.Name = "groupDepth";
             this.groupDepth.Padding = new System.Windows.Forms.Padding(4);
-            this.groupDepth.Size = new System.Drawing.Size(274, 66);
+            this.groupDepth.Size = new System.Drawing.Size(238, 66);
             this.groupDepth.TabIndex = 4;
             this.groupDepth.TabStop = false;
-            this.groupDepth.Text = "Depth";
+            this.groupDepth.Text = "Cor";
             // 
             // comboDepth
             // 
@@ -198,7 +186,7 @@
             this.comboDepth.Location = new System.Drawing.Point(24, 23);
             this.comboDepth.Margin = new System.Windows.Forms.Padding(4);
             this.comboDepth.Name = "comboDepth";
-            this.comboDepth.Size = new System.Drawing.Size(223, 24);
+            this.comboDepth.Size = new System.Drawing.Size(187, 24);
             this.comboDepth.TabIndex = 0;
             this.comboDepth.SelectedIndexChanged += new System.EventHandler(this.comboDepth_SelectedIndexChanged);
             // 
@@ -211,10 +199,10 @@
             this.groupSize.Margin = new System.Windows.Forms.Padding(11, 10, 11, 4);
             this.groupSize.Name = "groupSize";
             this.groupSize.Padding = new System.Windows.Forms.Padding(4);
-            this.groupSize.Size = new System.Drawing.Size(274, 66);
+            this.groupSize.Size = new System.Drawing.Size(238, 66);
             this.groupSize.TabIndex = 5;
             this.groupSize.TabStop = false;
-            this.groupSize.Text = "Size";
+            this.groupSize.Text = "Tamanho";
             // 
             // comboSize
             // 
@@ -225,7 +213,7 @@
             this.comboSize.Location = new System.Drawing.Point(24, 23);
             this.comboSize.Margin = new System.Windows.Forms.Padding(4);
             this.comboSize.Name = "comboSize";
-            this.comboSize.Size = new System.Drawing.Size(223, 24);
+            this.comboSize.Size = new System.Drawing.Size(187, 24);
             this.comboSize.TabIndex = 0;
             this.comboSize.SelectedIndexChanged += new System.EventHandler(this.comboSize_SelectedIndexChanged);
             // 
@@ -238,8 +226,9 @@
             this.panelOptions.Controls.Add(this.groupDepth, 0, 1);
             this.panelOptions.Controls.Add(this.groupDPI, 0, 0);
             this.panelOptions.Controls.Add(this.label1, 0, 6);
+            this.panelOptions.Controls.Add(this.btnStartCapture, 0, 4);
             this.panelOptions.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelOptions.Location = new System.Drawing.Point(0, 27);
+            this.panelOptions.Location = new System.Drawing.Point(0, 31);
             this.panelOptions.Margin = new System.Windows.Forms.Padding(4);
             this.panelOptions.Name = "panelOptions";
             this.panelOptions.RowCount = 7;
@@ -247,11 +236,11 @@
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
-            this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 57F));
+            this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.panelOptions.Size = new System.Drawing.Size(296, 579);
+            this.panelOptions.Size = new System.Drawing.Size(260, 575);
             this.panelOptions.TabIndex = 3;
             // 
             // label1
@@ -275,18 +264,18 @@
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67.65016F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32.34984F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.83019F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.16981F));
             this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(296, 27);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(260, 31);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(949, 579);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(985, 575);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // tableLayoutPanel2
@@ -296,13 +285,25 @@
             this.tableLayoutPanel2.Controls.Add(this.button2, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.textBox1, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(645, 3);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(621, 3);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94.06631F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.933682F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(301, 573);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(361, 569);
             this.tableLayoutPanel2.TabIndex = 2;
+            // 
+            // button2
+            // 
+            this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(3, 538);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(355, 28);
+            this.button2.TabIndex = 9;
+            this.button2.Text = "Copiar";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // textBox1
             // 
@@ -312,20 +313,20 @@
             this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(293, 531);
+            this.textBox1.Size = new System.Drawing.Size(353, 527);
             this.textBox1.TabIndex = 6;
             // 
-            // button2
+            // btnStartCapture
             // 
-            this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(3, 542);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(295, 28);
-            this.button2.TabIndex = 9;
-            this.button2.Text = "Copiar";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnStartCapture.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnStartCapture.Enabled = false;
+            this.btnStartCapture.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStartCapture.Location = new System.Drawing.Point(3, 243);
+            this.btnStartCapture.Name = "btnStartCapture";
+            this.btnStartCapture.Size = new System.Drawing.Size(254, 51);
+            this.btnStartCapture.TabIndex = 6;
+            this.btnStartCapture.Text = "Escanear";
+            this.btnStartCapture.UseVisualStyleBackColor = true;
             // 
             // TestForm
             // 
@@ -364,7 +365,6 @@
         private System.Windows.Forms.ToolStripDropDownButton btnSources;
         private System.Windows.Forms.ToolStripSeparator sepSourceList;
         private System.Windows.Forms.ToolStripMenuItem reloadSourcesListToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton btnStartCapture;
         private System.Windows.Forms.GroupBox groupDPI;
         private System.Windows.Forms.ComboBox comboDPI;
         private System.Windows.Forms.GroupBox groupDepth;
@@ -381,6 +381,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button btnStartCapture;
     }
 }
 
