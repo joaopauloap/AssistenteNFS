@@ -10,6 +10,7 @@ using Tesseract;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using ZXing;
 
 namespace Sample.Winform
 {
@@ -417,11 +418,12 @@ namespace Sample.Winform
         {
             openFileDialog1.ShowDialog();
 
-            if (openFileDialog1.FileName != "openFileDialog1")
+            if (openFileDialog1.FileName != "arquivo")
             {
 
                 string file = openFileDialog1.FileName;
                 string ocrtext = "";
+                Pix pic;
 
                 Cursor.Current = Cursors.WaitCursor;
 
@@ -435,20 +437,29 @@ namespace Sample.Winform
                     pictureBox1.Image = image;
 
                     Bitmap bmp = new Bitmap(image);
-                    Pix pic = PixConverter.ToPix(bmp);
-                    var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
-                    var page = engine.Process(pic);
-                    ocrtext = page.GetText();
-
+                    pic = PixConverter.ToPix(bmp);
                 }
                 else if (file.EndsWith(".jpg") || file.EndsWith(".jpeg") || file.EndsWith(".png"))
                 {
-                    pictureBox1.ImageLocation = file;
-                    var pic = Pix.LoadFromFile(file);
-                    var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
-                    var page = engine.Process(pic);
-                    ocrtext = page.GetText();
+                    //pictureBox1.ImageLocation = file;
+                    pictureBox1.Image = Image.FromFile(openFileDialog1.FileName);
+                    pic = Pix.LoadFromFile(file);
                 }
+                else
+                {
+                    return;
+                }
+
+                var engine = new TesseractEngine(@"./tessdata", "por", EngineMode.Default);
+                var page = engine.Process(pic);
+                ocrtext = page.GetText();
+
+                //BarcodeReader reader = new BarcodeReader();
+                //var result = reader.Decode((Bitmap)pictureBox1.Image);
+                //if (result != null)
+                //{
+                //    textBox1.Text = result.ToString();
+                //}
 
                 Cursor.Current = Cursors.Arrow;
                 extrairDados(ocrtext);

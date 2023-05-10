@@ -44,13 +44,13 @@
             this.comboSize = new System.Windows.Forms.ComboBox();
             this.panelOptions = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnStartCapture = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.btnStartCapture = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.groupDPI.SuspendLayout();
@@ -69,7 +69,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(4, 4);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(610, 567);
+            this.pictureBox1.Size = new System.Drawing.Size(610, 571);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
@@ -84,7 +84,7 @@
             this.toolStripButton1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1245, 31);
+            this.toolStrip1.Size = new System.Drawing.Size(1245, 27);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -97,7 +97,7 @@
             this.btnSources.Image = ((System.Drawing.Image)(resources.GetObject("btnSources.Image")));
             this.btnSources.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSources.Name = "btnSources";
-            this.btnSources.Size = new System.Drawing.Size(75, 28);
+            this.btnSources.Size = new System.Drawing.Size(75, 24);
             this.btnSources.Text = "Scanner";
             this.btnSources.DropDownOpening += new System.EventHandler(this.btnSources_DropDownOpening);
             // 
@@ -228,7 +228,7 @@
             this.panelOptions.Controls.Add(this.label1, 0, 6);
             this.panelOptions.Controls.Add(this.btnStartCapture, 0, 4);
             this.panelOptions.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelOptions.Location = new System.Drawing.Point(0, 31);
+            this.panelOptions.Location = new System.Drawing.Point(0, 27);
             this.panelOptions.Margin = new System.Windows.Forms.Padding(4);
             this.panelOptions.Name = "panelOptions";
             this.panelOptions.RowCount = 7;
@@ -240,7 +240,7 @@
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.panelOptions.Size = new System.Drawing.Size(260, 575);
+            this.panelOptions.Size = new System.Drawing.Size(260, 579);
             this.panelOptions.TabIndex = 3;
             // 
             // label1
@@ -254,9 +254,21 @@
             this.label1.Text = "   ";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
+            // btnStartCapture
+            // 
+            this.btnStartCapture.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnStartCapture.Enabled = false;
+            this.btnStartCapture.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStartCapture.Location = new System.Drawing.Point(3, 243);
+            this.btnStartCapture.Name = "btnStartCapture";
+            this.btnStartCapture.Size = new System.Drawing.Size(254, 51);
+            this.btnStartCapture.TabIndex = 6;
+            this.btnStartCapture.Text = "Escanear";
+            this.btnStartCapture.UseVisualStyleBackColor = true;
+            // 
             // openFileDialog1
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.FileName = "arquivo";
             // 
             // tableLayoutPanel1
             // 
@@ -269,13 +281,13 @@
             this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(260, 31);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(260, 27);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(985, 575);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(985, 579);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // tableLayoutPanel2
@@ -290,16 +302,16 @@
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94.06631F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.933682F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(361, 569);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(361, 573);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
             // button2
             // 
             this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(3, 538);
+            this.button2.Location = new System.Drawing.Point(3, 541);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(355, 28);
+            this.button2.Size = new System.Drawing.Size(355, 29);
             this.button2.TabIndex = 9;
             this.button2.Text = "Copiar";
             this.button2.UseVisualStyleBackColor = true;
@@ -313,20 +325,12 @@
             this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(353, 527);
+            this.textBox1.Size = new System.Drawing.Size(353, 530);
             this.textBox1.TabIndex = 6;
             // 
-            // btnStartCapture
+            // saveFileDialog1
             // 
-            this.btnStartCapture.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnStartCapture.Enabled = false;
-            this.btnStartCapture.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStartCapture.Location = new System.Drawing.Point(3, 243);
-            this.btnStartCapture.Name = "btnStartCapture";
-            this.btnStartCapture.Size = new System.Drawing.Size(254, 51);
-            this.btnStartCapture.TabIndex = 6;
-            this.btnStartCapture.Text = "Escanear";
-            this.btnStartCapture.UseVisualStyleBackColor = true;
+            this.saveFileDialog1.FileName = "imagem";
             // 
             // TestForm
             // 
