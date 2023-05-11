@@ -360,7 +360,7 @@ namespace Sample.Winform
             // only allow dpi of certain values for those source that lists everything
             var list = cap.GetValues().Where(dpi => (dpi % 50) == 0).ToList();
             comboDPI.DataSource = list;
-            
+
             var sel = (TWFix32)300; //Seta DPI padrão
             _twain.CurrentSource.Capabilities.ICapXResolution.SetValue(sel);
             _twain.CurrentSource.Capabilities.ICapYResolution.SetValue(sel);
@@ -419,7 +419,7 @@ namespace Sample.Winform
 
         #endregion
 
-        private void toolStripLabel1_Click(object sender, EventArgs e)
+        private void btnOpenFile_Click(object sender, EventArgs e)
         {
             openFileDialog1.ShowDialog();
 
@@ -471,9 +471,15 @@ namespace Sample.Winform
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
+            int x = (int)Math.Round(pictureBox1.Image.Width * 0.1);
+            int y = (int)Math.Round(pictureBox1.Image.Height * 0.1);
+            int largura = (int)Math.Round(pictureBox1.Image.Width * 0.7);
+            int altura = (int)Math.Round(pictureBox1.Image.Height * 0.7);
+            Rectangle CropRectangle = new Rectangle(x, y, largura, altura);
+            pictureBox1.Image = CropImage(pictureBox1.Image, CropRectangle);
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
+        private void btnSaveFile_Click(object sender, EventArgs e)
         {
             if (pictureBox1.Image != null)
             {
@@ -504,7 +510,6 @@ namespace Sample.Winform
             }
 
         }
-
         private void pictureBox1_MouseWheel(System.Object sender, MouseEventArgs e)
         {
             //if (e.Delta > 0)
@@ -521,16 +526,9 @@ namespace Sample.Winform
             return ((Bitmap)img).Clone(rect, img.PixelFormat);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnCopyOutput_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(textBox1.Text);
-            int x = (int)Math.Round(pictureBox1.Image.Width * 0.1);
-            int y = (int)Math.Round(pictureBox1.Image.Height * 0.1);
-            int largura = (int)Math.Round(pictureBox1.Image.Width * 0.7);
-            int altura = (int)Math.Round(pictureBox1.Image.Height * 0.7);
-            Rectangle CropRectangle = new Rectangle(x, y, largura, altura);
-            pictureBox1.Image = CropImage(pictureBox1.Image, CropRectangle);
-
         }
     }
 }

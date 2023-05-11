@@ -34,8 +34,8 @@
             this.btnSources = new System.Windows.Forms.ToolStripDropDownButton();
             this.sepSourceList = new System.Windows.Forms.ToolStripSeparator();
             this.reloadSourcesListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.btnOpenFile = new System.Windows.Forms.ToolStripButton();
+            this.btnSaveFile = new System.Windows.Forms.ToolStripButton();
             this.groupDPI = new System.Windows.Forms.GroupBox();
             this.comboDPI = new System.Windows.Forms.ComboBox();
             this.groupDepth = new System.Windows.Forms.GroupBox();
@@ -48,7 +48,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnCopyOutput = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -80,8 +80,8 @@
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnSources,
-            this.toolStripLabel1,
-            this.toolStripButton1});
+            this.btnOpenFile,
+            this.btnSaveFile});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1245, 27);
@@ -113,26 +113,26 @@
             this.reloadSourcesListToolStripMenuItem.Text = "Recarregar lista";
             this.reloadSourcesListToolStripMenuItem.Click += new System.EventHandler(this.reloadSourcesListToolStripMenuItem_Click);
             // 
-            // toolStripLabel1
+            // btnOpenFile
             // 
-            this.toolStripLabel1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripLabel1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripLabel1.Image")));
-            this.toolStripLabel1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(46, 24);
-            this.toolStripLabel1.Text = "Abrir";
-            this.toolStripLabel1.ToolTipText = "Abrir";
-            this.toolStripLabel1.Click += new System.EventHandler(this.toolStripLabel1_Click);
+            this.btnOpenFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnOpenFile.Image = ((System.Drawing.Image)(resources.GetObject("btnOpenFile.Image")));
+            this.btnOpenFile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnOpenFile.Name = "btnOpenFile";
+            this.btnOpenFile.Size = new System.Drawing.Size(46, 24);
+            this.btnOpenFile.Text = "Abrir";
+            this.btnOpenFile.ToolTipText = "Abrir";
+            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
-            // toolStripButton1
+            // btnSaveFile
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(53, 24);
-            this.toolStripButton1.Text = "Salvar";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            this.btnSaveFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnSaveFile.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveFile.Image")));
+            this.btnSaveFile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnSaveFile.Name = "btnSaveFile";
+            this.btnSaveFile.Size = new System.Drawing.Size(53, 24);
+            this.btnSaveFile.Text = "Salvar";
+            this.btnSaveFile.Click += new System.EventHandler(this.btnSaveFile_Click);
             // 
             // groupDPI
             // 
@@ -293,7 +293,7 @@
             // 
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.button2, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.btnCopyOutput, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.textBox1, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(621, 3);
@@ -304,17 +304,17 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(361, 573);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
-            // button2
+            // btnCopyOutput
             // 
-            this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(3, 541);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(355, 29);
-            this.button2.TabIndex = 9;
-            this.button2.Text = "Copiar";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnCopyOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnCopyOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCopyOutput.Location = new System.Drawing.Point(3, 541);
+            this.btnCopyOutput.Name = "btnCopyOutput";
+            this.btnCopyOutput.Size = new System.Drawing.Size(355, 29);
+            this.btnCopyOutput.TabIndex = 9;
+            this.btnCopyOutput.Text = "Copiar";
+            this.btnCopyOutput.UseVisualStyleBackColor = true;
+            this.btnCopyOutput.Click += new System.EventHandler(this.btnCopyOutput_Click);
             // 
             // textBox1
             // 
@@ -379,10 +379,10 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.ToolStripButton toolStripLabel1;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton btnOpenFile;
+        private System.Windows.Forms.ToolStripButton btnSaveFile;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnCopyOutput;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnStartCapture;
     }
