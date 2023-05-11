@@ -10,6 +10,7 @@ using Tesseract;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Contexts;
 
 namespace Sample.Winform
 {
@@ -19,68 +20,104 @@ namespace Sample.Winform
         TwainSession _twain;
         bool _stopScan;
         bool _loadingCaps;
-        string textOcr;
+        string ocrOutput;
 
-        public void extrairDados(string ocrtext)
+        public string extrairDados(string ocrtext)
         {
+            string text;
+            text = ocrtext.ToUpper();
+            text = ocrtext.Replace("\n", "");
 
-            ocrtext = ocrtext.ToUpper();
-            ocrtext = ocrtext.Replace("\n", "");
-            textOcr = ocrtext;
-
-            int placa_index = ocrtext.IndexOf("PLACA");
-            int cpf_index = ocrtext.IndexOf("CPF");
-            int propriedade_index = ocrtext.IndexOf("PROPRIEDADE");
-            int proprietario_index = ocrtext.IndexOf("PROPRIETARIO");
-            int renavam_index = ocrtext.IndexOf("RENAVAM");
-            int chassi_index = ocrtext.IndexOf("CHASSI:");
-            int motor_index = ocrtext.IndexOf("MOTOR");
-            int ano_index = ocrtext.IndexOf("ANO FABRICACAO");
-            int marca_index = ocrtext.IndexOf("MARCA/MODELO");
-            int especie_index = ocrtext.IndexOf("ESPECIE/TIPO");
-            int observacao_index = ocrtext.IndexOf("OBSERVACAO");
+            int placa_index = text.IndexOf("PLACA");
+            int cpf_index = text.IndexOf("CPF");
+            int propriedade_index = text.IndexOf("PROPRIEDADE");
+            int proprietario_index = text.IndexOf("PROPRIETARIO");
+            int renavam_index = text.IndexOf("RENAVAM");
+            int chassi_index = text.IndexOf("CHASSI:");
+            int motor_index = text.IndexOf("MOTOR");
+            int ano_index = text.IndexOf("ANO FABRICACAO");
+            int marca_index = text.IndexOf("MARCA/MODELO");
+            int especie_index = text.IndexOf("ESPECIE/TIPO");
+            int observacao_index = text.IndexOf("OBSERVACAO");
 
             try
             {
-                string cpf = ocrtext.Substring(cpf_index + 11, 11);
-                string placa = ocrtext.Substring(placa_index + 7, 7);
-                string renavam = new Regex(@"[^\d]").Replace(ocrtext.Substring(renavam_index + 9, 11), ""); //Remove letras
-                string chassi = ocrtext.Substring(chassi_index + 8, 17);
-                string ano = ocrtext.Substring(ano_index + 16, 11);
-                string especie = ocrtext.Substring(especie_index + 14, 22);
-                string marca = ocrtext.Substring(marca_index + 13, especie_index - marca_index - 13);
-                string motor = ocrtext.Substring(motor_index + 6, 9);
+                string cpf = text.Substring(cpf_index + 11, 11);
+                string placa = text.Substring(placa_index + 7, 7);
+                string renavam = new Regex(@"[^\d]").Replace(text.Substring(renavam_index + 9, 11), ""); //Remove letras
+                string chassi = text.Substring(chassi_index + 8, 17);
+                string ano = text.Substring(ano_index + 16, 11);
+                string especie = text.Substring(especie_index + 14, 22);
+                string marca = text.Substring(marca_index + 13, especie_index - marca_index - 13);
+                string motor = text.Substring(motor_index + 6, 9);
 
                 string nome;
                 if (propriedade_index > 0)
                 {
-                    nome = ocrtext.Substring(propriedade_index + 15, cpf_index - propriedade_index - 15);
+                    nome = text.Substring(propriedade_index + 15, cpf_index - propriedade_index - 15);
                 }
                 else
                 {
-                    nome = ocrtext.Substring(proprietario_index + 13, observacao_index - proprietario_index - 13);
+                    nome = text.Substring(proprietario_index + 13, observacao_index - proprietario_index - 13);
                 }
 
-                textBox1.Text = motor_index > 0 ? "REABERTURA DO NUMERO DO MOTOR: " + motor : "REABERTURA DO NUMERO DO CHASSI";
-                textBox1.Text += "\r\n" + "NO VEICULO DE PLACA: ";
-                textBox1.Text += placa_index > 0 ? placa : "";
-                textBox1.Text += "\r\n" + "RENAVAM: ";
-                textBox1.Text += renavam_index > 0 ? renavam : "";
-                textBox1.Text += "\r\n" + "MARCA / MODELO: ";
-                textBox1.Text += marca_index > 0 ? marca : "";
-                textBox1.Text += "\r\n" + "ESPECIE / TIPO: ";
-                textBox1.Text += especie_index > 0 ? especie : "";
-                textBox1.Text += "\r\n" + "ANO DE FABRICACAO: ";
-                textBox1.Text += ano_index > 0 ? ano : "";
-                textBox1.Text += "\r\n" + "CHASSI: ";
-                textBox1.Text += chassi_index > 0 ? chassi : "";
-                textBox1.Text += "\r\n" + "NOME: " + nome;
-                textBox1.Text += cpf_index > 0 ? "\r\n" + "CPF: " + cpf : "";
+                textBoxCPF.Text = cpf;
+                textBoxNome.Text = nome;
+
+                return
+                    "NO VEICULO DE PLACA: " + (placa_index > 0 ? placa : "") + "\r\n" +
+                    "RENAVAM: " + (renavam_index > 0 ? renavam : "") + "\r\n" +
+                    "MARCA / MODELO: " + (marca_index > 0 ? marca : "") + "\r\n" +
+                    "ESPECIE / TIPO: " + (especie_index > 0 ? especie : "") + "\r\n" +
+                    "ANO DE FABRICACAO: " + (ano_index > 0 ? ano : "") + "\r\n" +
+                    "CHASSI: " + (chassi_index > 0 ? chassi : "") + "\r\n" +
+                    (motor_index > 0 ? "NUMERO DO MOTOR: " + motor + "\r\n" : "");
             }
             catch
             {
-                textBox1.Text = textOcr;
+                return ocrtext;
             }
+        }
+
+        public string ExtrairChaveDANFe(string ocrtext)
+        {
+            string chave = "";
+            string pattern = @"\b(\d{4} \d{4} \d{4} \d{4} \d{4} \d{4} \d{4} \d{4} \d{4} \d{4} \d{4})\b";
+            Regex regex = new Regex(pattern);
+
+            Match match = regex.Match(ocrtext);
+            if (match.Success)
+            {
+                chave = match.Groups[1].Value.Replace(" ", "");
+            }
+
+            return chave;
+        }
+
+        public void ProcessarDados(string ocrtext)
+        {
+            if (comboBox1.SelectedIndex == 0)
+            {
+                textBoxOCR.Text = extrairDados(ocrtext);
+            }
+            else if (comboBox1.SelectedIndex == 1)
+            {
+                textBoxOCR.Text = ExtrairChaveDANFe(ocrtext);
+            }
+            else
+            {
+                textBoxOCR.Text = ocrtext;
+            }
+        }
+
+        public void IniciarOCR()
+        {
+            Bitmap bmp = new Bitmap(pictureBox1.Image);
+            Pix pic = PixConverter.ToPix(bmp);
+            var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
+            var page = engine.Process(pic);
+            ocrOutput = page.GetText();
+            ProcessarDados(ocrOutput);
         }
 
         #region setup & cleanup
@@ -88,7 +125,6 @@ namespace Sample.Winform
         public TestForm()
         {
             InitializeComponent();
-            this.pictureBox1.MouseWheel += new MouseEventHandler(pictureBox1_MouseWheel);
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -174,15 +210,8 @@ namespace Sample.Winform
                     btnStartCapture.Enabled = true;
                     panelOptions.Enabled = true;
                     LoadSourceCaps();
-
-                    Bitmap bmp = new Bitmap(pictureBox1.Image);
-                    Pix pic = PixConverter.ToPix(bmp);
-                    var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
-                    var page = engine.Process(pic);
-                    string ocrtext = page.GetText();
-                    extrairDados(ocrtext);
+                    IniciarOCR();
                     Cursor.Current = Cursors.Arrow;
-
                 }));
             };
             _twain.TransferReady += (s, e) =>
@@ -425,11 +454,7 @@ namespace Sample.Winform
 
             if (openFileDialog1.FileName != "arquivo")
             {
-
                 string file = openFileDialog1.FileName;
-                string ocrtext = "";
-                Pix pic;
-
                 Cursor.Current = Cursors.WaitCursor;
 
                 if (file.EndsWith(".pdf"))
@@ -437,36 +462,19 @@ namespace Sample.Winform
                     FileStream pdfStream = new FileStream(file, FileMode.Open);
                     byte[] png = Freeware.Pdf2Png.Convert(pdfStream, 1);
                     pdfStream.Close();
-                    Image image = Image.FromStream(new MemoryStream(png));
-
-                    pictureBox1.Image = image;
-
-                    Bitmap bmp = new Bitmap(image);
-                    pic = PixConverter.ToPix(bmp);
+                    pictureBox1.Image = Image.FromStream(new MemoryStream(png));
                 }
                 else if (file.EndsWith(".jpg") || file.EndsWith(".jpeg") || file.EndsWith(".png"))
                 {
-                    //pictureBox1.ImageLocation = file;
                     pictureBox1.Image = Image.FromFile(openFileDialog1.FileName);
-                    pic = Pix.LoadFromFile(file);
                 }
                 else
                 {
-                    return;
+                    return; //Encerra caso não tenha carregado uma imagem válida ou pdf
                 }
 
-                var engine = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
-                var page = engine.Process(pic);
-                ocrtext = page.GetText();
-
-                Cursor.Current = Cursors.Arrow;
-                extrairDados(ocrtext);
+                IniciarOCR();
             }
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = textOcr;
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -499,6 +507,8 @@ namespace Sample.Winform
 
         private void TestForm_Load(object sender, EventArgs e)
         {
+            comboBox1.SelectedIndex = 0;
+
             foreach (var item in _twain)
             {
                 if (item.Open() == ReturnCode.Success)
@@ -510,17 +520,6 @@ namespace Sample.Winform
             }
 
         }
-        private void pictureBox1_MouseWheel(System.Object sender, MouseEventArgs e)
-        {
-            //if (e.Delta > 0)
-            //{// aumentar o zoom
-            //    pictureBox1.Size = new Size((int)(pictureBox1.Width * 1.1), (int)(pictureBox1.Height * 1.1));
-            //}
-            //else
-            //{// diminuir o zoom
-            //    pictureBox1.Size = new Size((int)(pictureBox1.Width / 1.1), (int)(pictureBox1.Height / 1.1));
-            //}
-        }
         private Image CropImage(Image img, Rectangle rect)
         {
             return ((Bitmap)img).Clone(rect, img.PixelFormat);
@@ -528,7 +527,50 @@ namespace Sample.Winform
 
         private void btnCopyOutput_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(textBox1.Text);
+            Clipboard.SetText(textBoxOCR.Text);
+        }
+
+        private void textBoxCPF_Click(object sender, EventArgs e)
+        {
+            if (textBoxCPF.TextLength > 0)
+            {
+                Clipboard.SetText(textBoxCPF.Text);
+            }
+        }
+
+        private void textBoxNome_Click(object sender, EventArgs e)
+        {
+            if (textBoxNome.TextLength > 0)
+            {
+                Clipboard.SetText(textBoxNome.Text);
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == 0)
+            {
+                splitContainer1.Visible = true;
+            }
+            else
+            {
+                splitContainer1.Visible = false;
+            }
+
+            if (pictureBox1.Image != null)
+            {
+                ProcessarDados(ocrOutput);
+            }
+        }
+
+        private void textBoxCPF_MouseMove(object sender, EventArgs e)
+        {
+            toolTip1.SetToolTip(textBoxCPF, "Clique para copiar"); 
+        }
+
+        private void textBoxNome_MouseMove(object sender, EventArgs e)
+        {
+            toolTip1.SetToolTip(textBoxNome, "Clique para copiar");
         }
     }
 }
