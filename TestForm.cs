@@ -10,7 +10,6 @@ using Tesseract;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using ZXing;
 
 namespace Sample.Winform
 {
@@ -361,7 +360,13 @@ namespace Sample.Winform
             // only allow dpi of certain values for those source that lists everything
             var list = cap.GetValues().Where(dpi => (dpi % 50) == 0).ToList();
             comboDPI.DataSource = list;
+            
+            var sel = (TWFix32)300; //Seta DPI padrão
+            _twain.CurrentSource.Capabilities.ICapXResolution.SetValue(sel);
+            _twain.CurrentSource.Capabilities.ICapYResolution.SetValue(sel);
+
             var cur = cap.GetCurrent();
+
             if (list.Contains(cur))
             {
                 comboDPI.SelectedItem = cur;
@@ -450,16 +455,9 @@ namespace Sample.Winform
                     return;
                 }
 
-                var engine = new TesseractEngine(@"./tessdata", "por", EngineMode.Default);
+                var engine = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
                 var page = engine.Process(pic);
                 ocrtext = page.GetText();
-
-                //BarcodeReader reader = new BarcodeReader();
-                //var result = reader.Decode((Bitmap)pictureBox1.Image);
-                //if (result != null)
-                //{
-                //    textBox1.Text = result.ToString();
-                //}
 
                 Cursor.Current = Cursors.Arrow;
                 extrairDados(ocrtext);
@@ -534,6 +532,5 @@ namespace Sample.Winform
             pictureBox1.Image = CropImage(pictureBox1.Image, CropRectangle);
 
         }
-
     }
 }

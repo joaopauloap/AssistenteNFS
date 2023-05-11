@@ -154,8 +154,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboDPI.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboDPI.FormattingEnabled = true;
-            this.comboDPI.Items.AddRange(new object[] {
-            "300"});
             this.comboDPI.Location = new System.Drawing.Point(24, 23);
             this.comboDPI.Margin = new System.Windows.Forms.Padding(4);
             this.comboDPI.Name = "comboDPI";
@@ -265,6 +263,7 @@
             this.btnStartCapture.TabIndex = 6;
             this.btnStartCapture.Text = "Escanear";
             this.btnStartCapture.UseVisualStyleBackColor = true;
+            this.btnStartCapture.Click += new System.EventHandler(this.btnStartCapture_Click);
             // 
             // openFileDialog1
             // 
