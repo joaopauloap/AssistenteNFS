@@ -525,11 +525,6 @@ namespace Sample.Winform
             return ((Bitmap)img).Clone(rect, img.PixelFormat);
         }
 
-        private void btnCopyOutput_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetText(textBoxOCR.Text);
-        }
-
         private void textBoxCPF_Click(object sender, EventArgs e)
         {
             if (textBoxCPF.TextLength > 0)
@@ -572,5 +567,11 @@ namespace Sample.Winform
         {
             toolTip1.SetToolTip(textBoxNome, "Clique para copiar");
         }
+
+        private void btnCopyOutput_Click_1(object sender, EventArgs e)
+        {
+            Clipboard.SetText(textBoxOCR.Text);
+        }
+
     }
 }
