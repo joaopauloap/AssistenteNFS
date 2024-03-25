@@ -25,11 +25,16 @@ namespace Sample.Winform
         public string extrairDados(string ocrtext)
         {
             string text;
+            string tipo;
+
             text = ocrtext.ToUpper();
             text = ocrtext.Replace("\n", "");
 
+            int tipo_chassi = text.IndexOf("GRAVAR O CHASSI");
+            int tipo_motor = text.IndexOf("GRAVAR O NUMERO");
             int placa_index = text.IndexOf("PLACA");
             int cpf_index = text.IndexOf("CPF");
+            int cgc_index = text.IndexOf("CGC");
             int propriedade_index = text.IndexOf("PROPRIEDADE");
             int proprietario_index = text.IndexOf("PROPRIETARIO");
             int renavam_index = text.IndexOf("RENAVAM");
@@ -40,43 +45,53 @@ namespace Sample.Winform
             int especie_index = text.IndexOf("ESPECIE/TIPO");
             int observacao_index = text.IndexOf("OBSERVACAO");
 
-            try
+            if (cpf_index <= 0) cpf_index = cgc_index - 4;
+
+
+            if (tipo_chassi > 0)
             {
-                string cpf = text.Substring(cpf_index + 11, 11);
-                string placa = text.Substring(placa_index + 7, 7);
-                string renavam = new Regex(@"[^\d]").Replace(text.Substring(renavam_index + 9, 11), ""); //Remove letras
-                string chassi = text.Substring(chassi_index + 8, 17);
-                string ano = text.Substring(ano_index + 16, 11);
-                string especie = text.Substring(especie_index + 14, 22);
-                string marca = text.Substring(marca_index + 13, especie_index - marca_index - 13);
-                string motor = text.Substring(motor_index + 6, 9);
-
-                string nome;
-                if (propriedade_index > 0)
-                {
-                    nome = text.Substring(propriedade_index + 15, cpf_index - propriedade_index - 15);
-                }
-                else
-                {
-                    nome = text.Substring(proprietario_index + 13, observacao_index - proprietario_index - 13);
-                }
-
-                textBoxCPF.Text = cpf;
-                textBoxNome.Text = nome;
-
-                return
-                    "NO VEICULO DE PLACA: " + (placa_index > 0 ? placa : "") + "\r\n" +
-                    "RENAVAM: " + (renavam_index > 0 ? renavam : "") + "\r\n" +
-                    "MARCA / MODELO: " + (marca_index > 0 ? marca : "") + "\r\n" +
-                    "ESPECIE / TIPO: " + (especie_index > 0 ? especie : "") + "\r\n" +
-                    "ANO DE FABRICACAO: " + (ano_index > 0 ? ano : "") + "\r\n" +
-                    "CHASSI: " + (chassi_index > 0 ? chassi : "") + "\r\n" +
-                    (motor_index > 0 ? "NUMERO DO MOTOR: " + motor + "\r\n" : "");
+                tipo = "GRAVAÇÃO DE NUMERO CHASSI";
             }
-            catch
+            else if (tipo_motor > 0)
             {
-                return ocrtext;
+                tipo = "GRAVAÇÃO DE NUMERO MOTOR";
             }
+            else
+            {
+                tipo = "GRAVAÇÃO DE NUMERO";
+            }
+
+            string cpf = new Regex(@"[^\d]").Replace(text.Substring(cpf_index + 11, 14), "");
+            string placa = text.Substring(placa_index + 7, 7);
+            string renavam = new Regex(@"[^\d]").Replace(text.Substring(renavam_index + 9, 11), ""); 
+            string chassi = text.Substring(chassi_index + 8, 17);
+            string ano = text.Substring(ano_index + 16, 11);
+            string especie = text.Substring(especie_index + 14, 22);
+            string marca = text.Substring(marca_index + 13, especie_index - marca_index - 13);
+            string motor = text.Substring(motor_index + 6, 9);
+
+            string nome = "";
+            if (propriedade_index > 0 && cpf_index>0)
+            {
+                nome = text.Substring(propriedade_index + 15, cpf_index - propriedade_index - 15);
+            }
+            if(proprietario_index>0 && observacao_index>0)
+            {
+                nome = text.Substring(proprietario_index + 13, observacao_index - proprietario_index - 13);
+            }
+
+            textBoxCPF.Text = cpf;
+            textBoxNome.Text = nome;
+
+            return
+                tipo + "\r\n" +
+                "NO VEICULO DE PLACA: " + (placa_index > 0 ? placa : "") + "\r\n" +
+                "RENAVAM: " + (renavam_index > 0 ? renavam : "") + "\r\n" +
+                "MARCA / MODELO: " + (marca_index > 0 ? marca : "") + "\r\n" +
+                "ESPECIE / TIPO: " + (especie_index > 0 ? especie : "") + "\r\n" +
+                "ANO DE FABRICACAO: " + (ano_index > 0 ? ano : "") + "\r\n" +
+                "CHASSI: " + (chassi_index > 0 ? chassi : "") + "\r\n" +
+                (motor_index > 0 ? "NUMERO DO MOTOR: " + motor + "\r\n" : "");
         }
 
         public string ExtrairChaveDANFe(string ocrtext)
@@ -106,6 +121,8 @@ namespace Sample.Winform
             }
             else
             {
+                textBoxCPF.Text = "";
+                textBoxNome.Text = "";
                 textBoxOCR.Text = ocrtext;
             }
         }
@@ -509,15 +526,15 @@ namespace Sample.Winform
         {
             comboBox1.SelectedIndex = 0;
 
-            foreach (var item in _twain)
-            {
-                if (item.Open() == ReturnCode.Success)
-                {
-                    btnStartCapture.Enabled = true;
-                    LoadSourceCaps();
-                    break;
-                }
-            }
+            //foreach (var item in _twain)
+            //{
+            //    if (item.Open() == ReturnCode.Success)
+            //    {
+            //        btnStartCapture.Enabled = true;
+            //        LoadSourceCaps();
+            //        break;
+            //    }
+            //}
 
         }
         private Image CropImage(Image img, Rectangle rect)
@@ -560,7 +577,7 @@ namespace Sample.Winform
 
         private void textBoxCPF_MouseMove(object sender, EventArgs e)
         {
-            toolTip1.SetToolTip(textBoxCPF, "Clique para copiar"); 
+            toolTip1.SetToolTip(textBoxCPF, "Clique para copiar");
         }
 
         private void textBoxNome_MouseMove(object sender, EventArgs e)
