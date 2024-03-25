@@ -21,6 +21,8 @@ namespace Sample.Winform
         bool _stopScan;
         bool _loadingCaps;
         string ocrOutput;
+        Image img;
+
 
         public string extrairDados(string ocrtext)
         {
@@ -168,7 +170,6 @@ namespace Sample.Winform
 
         private void SetupTwain()
         {
-            Image img = null;
             var appId = TWIdentity.CreateFromAssembly(DataGroups.Image, Assembly.GetEntryAssembly());
             _twain = new TwainSession(appId);
             _twain.StateChanged += (s, e) =>
@@ -479,29 +480,38 @@ namespace Sample.Winform
                     FileStream pdfStream = new FileStream(file, FileMode.Open);
                     byte[] png = Freeware.Pdf2Png.Convert(pdfStream, 1);
                     pdfStream.Close();
-                    pictureBox1.Image = Image.FromStream(new MemoryStream(png));
+                    img = Image.FromStream(new MemoryStream(png));
                 }
                 else if (file.EndsWith(".jpg") || file.EndsWith(".jpeg") || file.EndsWith(".png"))
                 {
-                    pictureBox1.Image = Image.FromFile(openFileDialog1.FileName);
+                    img = Image.FromFile(openFileDialog1.FileName);
                 }
                 else
                 {
                     return; //Encerra caso não tenha carregado uma imagem válida ou pdf
                 }
-
+                
+                pictureBox1.Image = img;
+                
                 IniciarOCR();
             }
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            int x = (int)Math.Round(pictureBox1.Image.Width * 0.1);
-            int y = (int)Math.Round(pictureBox1.Image.Height * 0.1);
-            int largura = (int)Math.Round(pictureBox1.Image.Width * 0.7);
-            int altura = (int)Math.Round(pictureBox1.Image.Height * 0.7);
-            Rectangle CropRectangle = new Rectangle(x, y, largura, altura);
-            pictureBox1.Image = CropImage(pictureBox1.Image, CropRectangle);
+            if (e.Button == MouseButtons.Left)
+            {
+                int x = (int)Math.Round(pictureBox1.Image.Width * 0.1);
+                int y = (int)Math.Round(pictureBox1.Image.Height * 0.1);
+                int largura = (int)Math.Round(pictureBox1.Image.Width * 0.7);
+                int altura = (int)Math.Round(pictureBox1.Image.Height * 0.7);
+                Rectangle CropRectangle = new Rectangle(x, y, largura, altura);
+                pictureBox1.Image = CropImage(pictureBox1.Image, CropRectangle);
+            }
+            else
+            {
+                pictureBox1.Image = img;
+            }
         }
 
         private void btnSaveFile_Click(object sender, EventArgs e)
