@@ -5,7 +5,7 @@
 
 #Custom files and folders
 Samples/
-
+Properties/properties.json
 
 # User-specific files
 *.rsuser
