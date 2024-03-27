@@ -57,6 +57,7 @@
             this.btnEmitir = new System.Windows.Forms.Button();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnPesquisar = new System.Windows.Forms.Button();
             this.textBoxCPF = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.textBoxNome = new System.Windows.Forms.TextBox();
@@ -108,7 +109,7 @@
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.InitialImage = null;
             this.pictureBox1.Location = new System.Drawing.Point(4, 4);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(795, 713);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -192,13 +193,13 @@
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(260, 32);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 727F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 727F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 721F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 721F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1279, 721);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
@@ -443,6 +444,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btnPesquisar);
             this.groupBox2.Controls.Add(this.textBoxCPF);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -452,7 +454,17 @@
             this.groupBox2.Size = new System.Drawing.Size(133, 40);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "CPF / CNPJ";
+            this.groupBox2.Text = "CPF/CNPJ";
+            // 
+            // btnPesquisar
+            // 
+            this.btnPesquisar.BackColor = System.Drawing.Color.LightBlue;
+            this.btnPesquisar.Location = new System.Drawing.Point(104, 2);
+            this.btnPesquisar.Name = "btnPesquisar";
+            this.btnPesquisar.Size = new System.Drawing.Size(29, 18);
+            this.btnPesquisar.TabIndex = 2;
+            this.btnPesquisar.UseVisualStyleBackColor = false;
+            this.btnPesquisar.Click += new System.EventHandler(this.btnPesquisar_Click);
             // 
             // textBoxCPF
             // 
@@ -475,7 +487,7 @@
             this.groupBox3.Size = new System.Drawing.Size(319, 40);
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Nome / Razão Social";
+            this.groupBox3.Text = "Nome/Razão Social";
             // 
             // textBoxNome
             // 
@@ -541,7 +553,7 @@
             this.observacao.Dock = System.Windows.Forms.DockStyle.Fill;
             this.observacao.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.observacao.Location = new System.Drawing.Point(3, 23);
-            this.observacao.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.observacao.Margin = new System.Windows.Forms.Padding(4);
             this.observacao.Multiline = true;
             this.observacao.Name = "observacao";
             this.observacao.Size = new System.Drawing.Size(458, 475);
@@ -563,7 +575,7 @@
             this.panelOptions.Controls.Add(this.groupDepth, 0, 6);
             this.panelOptions.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelOptions.Location = new System.Drawing.Point(0, 32);
-            this.panelOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelOptions.Margin = new System.Windows.Forms.Padding(4);
             this.panelOptions.Name = "panelOptions";
             this.panelOptions.RowCount = 9;
             this.panelOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -601,7 +613,7 @@
             this.groupBox1.Location = new System.Drawing.Point(11, 10);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(11, 10, 11, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(238, 71);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
@@ -619,7 +631,7 @@
             "Chave DANFe",
             "Outro"});
             this.comboBox1.Location = new System.Drawing.Point(24, 28);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(187, 28);
             this.comboBox1.TabIndex = 0;
@@ -635,7 +647,7 @@
             this.groupSize.Location = new System.Drawing.Point(11, 180);
             this.groupSize.Margin = new System.Windows.Forms.Padding(11, 10, 11, 4);
             this.groupSize.Name = "groupSize";
-            this.groupSize.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupSize.Padding = new System.Windows.Forms.Padding(4);
             this.groupSize.Size = new System.Drawing.Size(238, 71);
             this.groupSize.TabIndex = 0;
             this.groupSize.TabStop = false;
@@ -648,7 +660,7 @@
             this.comboSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboSize.FormattingEnabled = true;
             this.comboSize.Location = new System.Drawing.Point(24, 28);
-            this.comboSize.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboSize.Margin = new System.Windows.Forms.Padding(4);
             this.comboSize.Name = "comboSize";
             this.comboSize.Size = new System.Drawing.Size(187, 28);
             this.comboSize.TabIndex = 0;
@@ -664,7 +676,7 @@
             this.groupDPI.Location = new System.Drawing.Point(11, 95);
             this.groupDPI.Margin = new System.Windows.Forms.Padding(11, 10, 11, 4);
             this.groupDPI.Name = "groupDPI";
-            this.groupDPI.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupDPI.Padding = new System.Windows.Forms.Padding(4);
             this.groupDPI.Size = new System.Drawing.Size(238, 71);
             this.groupDPI.TabIndex = 0;
             this.groupDPI.TabStop = false;
@@ -677,7 +689,7 @@
             this.comboDPI.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboDPI.FormattingEnabled = true;
             this.comboDPI.Location = new System.Drawing.Point(24, 28);
-            this.comboDPI.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboDPI.Margin = new System.Windows.Forms.Padding(4);
             this.comboDPI.Name = "comboDPI";
             this.comboDPI.Size = new System.Drawing.Size(188, 28);
             this.comboDPI.TabIndex = 0;
@@ -693,7 +705,7 @@
             this.groupDepth.Location = new System.Drawing.Point(11, 265);
             this.groupDepth.Margin = new System.Windows.Forms.Padding(11, 10, 11, 4);
             this.groupDepth.Name = "groupDepth";
-            this.groupDepth.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupDepth.Padding = new System.Windows.Forms.Padding(4);
             this.groupDepth.Size = new System.Drawing.Size(238, 71);
             this.groupDepth.TabIndex = 0;
             this.groupDepth.TabStop = false;
@@ -706,7 +718,7 @@
             this.comboDepth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboDepth.FormattingEnabled = true;
             this.comboDepth.Location = new System.Drawing.Point(24, 30);
-            this.comboDepth.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboDepth.Margin = new System.Windows.Forms.Padding(4);
             this.comboDepth.Name = "comboDepth";
             this.comboDepth.Size = new System.Drawing.Size(188, 28);
             this.comboDepth.TabIndex = 0;
@@ -722,7 +734,7 @@
             this.Controls.Add(this.panelOptions);
             this.Controls.Add(this.toolStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TestForm";
             this.Text = "Assistente NFS";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -814,6 +826,7 @@
         private System.Windows.Forms.TextBox textBoxEndereco;
         private System.Windows.Forms.GroupBox groupBox10;
         private System.Windows.Forms.TextBox observacao;
+        private System.Windows.Forms.Button btnPesquisar;
     }
 }
 

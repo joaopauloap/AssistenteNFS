@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Bson;
 
 namespace Sample.Winform
 {
@@ -27,6 +28,17 @@ namespace Sample.Winform
         string ocrOutput;
         static string configJson = File.ReadAllText("properties/config.json");
         JObject configObj = JObject.Parse(configJson);
+        HttpClientHandler _handler;
+        HttpClient _client;
+        static string propertiesJson = File.ReadAllText("properties/properties.json");
+        JObject propertiesObj = JObject.Parse(propertiesJson);
+
+        public TestForm()
+        {
+            _handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
+            _client = new HttpClient(_handler);
+            InitializeComponent();
+        }
 
         public string extrairDados(string ocrtext)
         {
@@ -146,11 +158,6 @@ namespace Sample.Winform
         }
 
         #region setup & cleanup
-
-        public TestForm()
-        {
-            InitializeComponent();
-        }
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -505,18 +512,21 @@ namespace Sample.Winform
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (pictureBox1.Image != null)
             {
-                int x = (int)Math.Round(pictureBox1.Image.Width * 0.1);
-                int y = (int)Math.Round(pictureBox1.Image.Height * 0.1);
-                int largura = (int)Math.Round(pictureBox1.Image.Width * 0.7);
-                int altura = (int)Math.Round(pictureBox1.Image.Height * 0.7);
-                Rectangle CropRectangle = new Rectangle(x, y, largura, altura);
-                pictureBox1.Image = CropImage(pictureBox1.Image, CropRectangle);
-            }
-            else
-            {
-                pictureBox1.Image = img;
+                if (e.Button == MouseButtons.Left)
+                {
+                    int x = (int)Math.Round(pictureBox1.Image.Width * 0.1);
+                    int y = (int)Math.Round(pictureBox1.Image.Height * 0.1);
+                    int largura = (int)Math.Round(pictureBox1.Image.Width * 0.7);
+                    int altura = (int)Math.Round(pictureBox1.Image.Height * 0.7);
+                    Rectangle CropRectangle = new Rectangle(x, y, largura, altura);
+                    pictureBox1.Image = CropImage(pictureBox1.Image, CropRectangle);
+                }
+                else
+                {
+                    pictureBox1.Image = img;
+                }
             }
         }
 
@@ -674,92 +684,56 @@ namespace Sample.Winform
             }
         }
 
-        Boolean emitirNotaFiscalAsync()
+        void fazerLogin()
         {
-            string json = File.ReadAllText("properties/properties.json");
-            JObject obj = JObject.Parse(json);
-            string tokenUrl = obj["token"]["url"].ToString();
-            string tokenParams = obj["token"]["params"].ToString();
-            string loginUrl = obj["login"]["url"].ToString();
-            string loginParams = obj["login"]["params"].ToString();
-
-            string obterPessoaUrl = obj["emissaoNF"]["obterPessoa"].ToString();
-            string obterEnderecoAsyncUrl = obj["emissaoNF"]["obterEnderecoAsync"].ToString();
-            //string obterEnderecoCompletedUrl = obj["emissaoNF"]["obterEnderecoCompleted"].ToString();
-            string obterEnderecoUrl = obj["emissaoNF"]["obterEndereco"].ToString();
-            string obterMunicipioUrl = obj["emissaoNF"]["obterMunicipio"].ToString();
-            string cadastrarPessoaUrl = obj["emissaoNF"]["cadastrarPessoa"].ToString();
-            string emitirNFUrl = obj["emissaoNF"]["emitirNF"].ToString();
-            string emitirNFCompletedUrl = obj["emissaoNF"]["emitirNFCompleted"].ToString();
-            string nfBody = obj["emissaoNF"]["body"].ToString();
-
-            var handler = new HttpClientHandler();
-            handler.CookieContainer = new CookieContainer();
-            var client = new HttpClient(handler);
-
-
+            string tokenUrl = propertiesObj["token"]["url"].ToString();
+            string tokenParams = propertiesObj["token"]["params"].ToString();
+            string loginUrl = propertiesObj["login"]["url"].ToString();
+            string loginParams = propertiesObj["login"]["params"].ToString();
             //token
             var tokenRequest = new StringContent(tokenParams, Encoding.UTF8, "application/json");
-            HttpResponseMessage tokenResponse = client.PostAsync(tokenUrl, tokenRequest).Result;
+            HttpResponseMessage tokenResponse = _client.PostAsync(tokenUrl, tokenRequest).Result;
             tokenResponse.EnsureSuccessStatusCode();
             //string tokenContent = await tokenResponse.Content.ReadAsStringAsync();
 
             //login 
             var loginRequest = new StringContent(loginParams, Encoding.UTF8, "application/x-www-form-urlencoded");
-            HttpResponseMessage loginResponse = client.PostAsync(loginUrl, loginRequest).Result;
+            HttpResponseMessage loginResponse = _client.PostAsync(loginUrl, loginRequest).Result;
             loginResponse.EnsureSuccessStatusCode();
             //string loginContent = await loginResponse.Content.ReadAsStringAsync();
+        }
 
-            //obter/cadastrar pessoa
+        string consultarPessoa()
+        {
+            string obterPessoaUrl = propertiesObj["emissaoNF"]["obterPessoa"].ToString();
             var obterPessoaRequest = new StringContent($"documento={textBoxCPF.Text}", Encoding.UTF8, "application/x-www-form-urlencoded");
-            HttpResponseMessage obterPessoaResponse = client.PostAsync(obterPessoaUrl, obterPessoaRequest).Result;
+            HttpResponseMessage obterPessoaResponse = _client.PostAsync(obterPessoaUrl, obterPessoaRequest).Result;
             obterPessoaResponse.EnsureSuccessStatusCode();
             string obterPessoaContent = obterPessoaResponse.Content.ReadAsStringAsync().Result;
-
-            string pessoaId = "";
-            JObject enderecoObj = null;
-            JObject municipioObj = null;
-
-            //obter endereco
-            var obterEnderecoAsyncRequest = new StringContent($"cep={textBoxCEP.Text}&permitirCepDeOutrosMunicipios=true&cadastrarCep=true", Encoding.UTF8, "application/x-www-form-urlencoded");
-            HttpResponseMessage obterEnderecoAsyncResponse = client.PostAsync(obterEnderecoAsyncUrl, obterEnderecoAsyncRequest).Result;
-            obterEnderecoAsyncResponse.EnsureSuccessStatusCode();
-            string obterEnderecoAsyncContent = obterEnderecoAsyncResponse.Content.ReadAsStringAsync().Result;
-            Thread.Sleep(5000); //TODO melhorar
-            var obterEnderecoRequest = new StringContent($"id={obterEnderecoAsyncContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
-            HttpResponseMessage obterEnderecoResponse = client.PostAsync(obterEnderecoUrl, obterEnderecoRequest).Result;
-            obterEnderecoResponse.EnsureSuccessStatusCode();
-            string obterEnderecoContent = obterEnderecoResponse.Content.ReadAsStringAsync().Result;
-            enderecoObj = JObject.Parse(obterEnderecoContent);
-
-            var obterMunicipioRequest = new StringContent($"idMunicipio={enderecoObj["IdMunicipio"]}&idEstado={enderecoObj["IdEstado"]}&page=1&start=0&limit=10", Encoding.UTF8, "application/x-www-form-urlencoded");
-            HttpResponseMessage obterMunicipioResponse = client.PostAsync(obterMunicipioUrl, obterMunicipioRequest).Result;
-            obterMunicipioResponse.EnsureSuccessStatusCode();
-            string obterMunicipioContent = obterMunicipioResponse.Content.ReadAsStringAsync().Result;
-            municipioObj = JObject.Parse(obterMunicipioContent);
-
-            textBoxCEP.Text = textBoxCEP.Text.Replace("-", "");
-            textBoxUF.Text = enderecoObj["NomeEstado"].ToString();
-            textBoxCidade.Text = enderecoObj["NomeMunicipio"].ToString().ToUpper();
-            textBoxEndereco.Text = enderecoObj["DescricaoEndereco"].ToString().ToUpper() + ", ";
-
-            if (obterPessoaContent.Equals(""))
+            if (obterPessoaContent == null || obterPessoaContent.Equals(""))
             {
-                DialogResult confirmarCadastroPessoa = MessageBox.Show("Pessoa não cadastrada. Cadastrar nova pessoa?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                MessageBox.Show("Pessoa não cadastrada!");
+                return null;
+            }
+            JObject pessoaObj = JObject.Parse(obterPessoaContent);
+            textBoxNome.Text = pessoaObj["NomeRazaoSocial"].ToString();
+            if (pessoaObj["EnderecosPessoa"] != null && pessoaObj["EnderecosPessoa"].Type == JTokenType.Array && pessoaObj["EnderecosPessoa"].Any())
+            {
+                textBoxCEP.Text = pessoaObj["EnderecosPessoa"][0]["Cep"].ToString();
+            }
+            string pessoaId = pessoaObj["Id"].ToString();
+            return pessoaId;
+        }
 
-                if (confirmarCadastroPessoa == DialogResult.Yes)
-                {
-                    string pessoaJson = @"{
+        string cadastrarPessoa()
+        {
+            string cadastrarPessoaUrl = propertiesObj["emissaoNF"]["cadastrarPessoa"].ToString();
+            JObject enderecoObj = obterEndereco();
+
+            string pessoaJson = @"{
                     ""IdTipoPessoa"": -1,
                     ""CpfCnpj"": """ + textBoxCPF.Text + @""",
                     ""NomeRazaoSocial"": """ + textBoxNome.Text + @""",
-                    ""IdSexo"": null,
-                    ""IdTipoTelefone"": null,
-                    ""Ddi"": null,
-                    ""Ddd"": null,
-                    ""NumeroTelefone"": null,
-                    ""Ramal"": """",
-                    ""Email"": """",
                     ""IdPaisNaturalidade"": """ + enderecoObj["IdPais"] + @""" ,
                     ""IdEstadoNaturalidade"": """ + enderecoObj["IdEstado"] + @""" ,
                     ""IdMunicipioNaturalidade"": """ + enderecoObj["IdMunicipio"] + @""" ,
@@ -769,21 +743,76 @@ namespace Sample.Winform
                     ""IdLogradouro"":""" + enderecoObj["IdLogradouro"] + @""" ,
                     ""Logradouro"": """ + enderecoObj["Logradouro"] + @""" ,
                     ""IdEnderecamentoPostal"": """ + enderecoObj["Id"] + @""" ,
-                    ""IdDistrito"": null,
-                    ""Distrito"": """",
-                    ""LocalNaturalidadeEstrangeiro"": """",
-                    ""Numero"": """",
-                    ""Complemento"":"""",
                     ""Cep"": """ + enderecoObj["Cep"] + @""" ,
                     ""Municipio"": """ + enderecoObj["NomeMunicipio"] + @""" ,
                     ""Estado"": """ + enderecoObj["NomeEstado"] + @""" ,
-                    ""Pais"": ""BRASIL""
+                    ""IdSexo"": null,""IdTipoTelefone"": null,""Ddi"": null,""Ddd"": null,""NumeroTelefone"": null,""Ramal"": """",""Email"": """",""IdDistrito"": null,""Distrito"": """",""LocalNaturalidadeEstrangeiro"": """",""Numero"": """",""Complemento"":"""",""Pais"": ""BRASIL""
                 }";
-                    var cadastrarPessoaRequest = new StringContent("values=" + pessoaJson, Encoding.UTF8, "application/x-www-form-urlencoded");
-                    HttpResponseMessage cadastrarPessoaResponse = client.PostAsync(cadastrarPessoaUrl, cadastrarPessoaRequest).Result;
-                    cadastrarPessoaResponse.EnsureSuccessStatusCode();
-                    pessoaId = cadastrarPessoaResponse.Content.ReadAsStringAsync().Result;
-                    MessageBox.Show("Pessoa cadastrada com sucesso! Id: " + pessoaId);
+            var cadastrarPessoaRequest = new StringContent("values=" + pessoaJson, Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage cadastrarPessoaResponse = _client.PostAsync(cadastrarPessoaUrl, cadastrarPessoaRequest).Result;
+            cadastrarPessoaResponse.EnsureSuccessStatusCode();
+            string pessoaId = cadastrarPessoaResponse.Content.ReadAsStringAsync().Result;
+            MessageBox.Show("Pessoa cadastrada com sucesso! Id: " + pessoaId);
+            return pessoaId;
+        }
+
+        JObject obterEndereco()
+        {
+            string obterEnderecoAsyncUrl = propertiesObj["emissaoNF"]["obterEnderecoAsync"].ToString();
+            //string obterEnderecoCompletedUrl = obj["emissaoNF"]["obterEnderecoCompleted"].ToString();
+            string obterEnderecoUrl = propertiesObj["emissaoNF"]["obterEndereco"].ToString();
+            string obterMunicipioUrl = propertiesObj["emissaoNF"]["obterMunicipio"].ToString();
+            JObject enderecoObj = null;
+            JObject municipioObj = null;
+
+            //obter endereco
+            var obterEnderecoAsyncRequest = new StringContent($"cep={textBoxCEP.Text}&permitirCepDeOutrosMunicipios=true&cadastrarCep=true", Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage obterEnderecoAsyncResponse = _client.PostAsync(obterEnderecoAsyncUrl, obterEnderecoAsyncRequest).Result;
+            obterEnderecoAsyncResponse.EnsureSuccessStatusCode();
+            string obterEnderecoAsyncContent = obterEnderecoAsyncResponse.Content.ReadAsStringAsync().Result;
+            Thread.Sleep(5000); //TODO melhorar
+            var obterEnderecoRequest = new StringContent($"id={obterEnderecoAsyncContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage obterEnderecoResponse = _client.PostAsync(obterEnderecoUrl, obterEnderecoRequest).Result;
+            obterEnderecoResponse.EnsureSuccessStatusCode();
+            string obterEnderecoContent = obterEnderecoResponse.Content.ReadAsStringAsync().Result;
+            enderecoObj = JObject.Parse(obterEnderecoContent);
+
+            //obtendo municipio apenas pra pegar CodigoIbge
+            var obterMunicipioRequest = new StringContent($"idMunicipio={enderecoObj["IdMunicipio"]}&idEstado={enderecoObj["IdEstado"]}&page=1&start=0&limit=10", Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage obterMunicipioResponse = _client.PostAsync(obterMunicipioUrl, obterMunicipioRequest).Result;
+            obterMunicipioResponse.EnsureSuccessStatusCode();
+            string obterMunicipioContent = obterMunicipioResponse.Content.ReadAsStringAsync().Result;
+            municipioObj = JObject.Parse(obterMunicipioContent);
+            enderecoObj["CodigoIbge"] = municipioObj["Dados"][0]["CodigoIbge"];
+
+            textBoxCEP.Text = textBoxCEP.Text.Replace(" - ", "");
+            textBoxUF.Text = enderecoObj["NomeEstado"].ToString();
+            textBoxCidade.Text = enderecoObj["NomeMunicipio"].ToString().ToUpper();
+            if (enderecoObj["DescricaoEndereco"].ToString().Length > 1)
+            {
+                textBoxEndereco.Text = enderecoObj["DescricaoEndereco"].ToString().ToUpper() + ", ";
+            }
+
+            return enderecoObj;
+        }
+        Boolean emitirNotaFiscalAsync()
+        {
+
+            fazerLogin();
+
+            string emitirNFUrl = propertiesObj["emissaoNF"]["emitirNF"].ToString();
+            string emitirNFCompletedUrl = propertiesObj["emissaoNF"]["emitirNFCompleted"].ToString();
+            string nfBody = propertiesObj["emissaoNF"]["body"].ToString();
+            string pessoaId = consultarPessoa();
+            JObject enderecoObj = obterEndereco();
+
+            if (pessoaId == null || pessoaId.Equals(""))
+            {
+                DialogResult confirmarCadastroPessoa = MessageBox.Show("Pessoa não cadastrada. Cadastrar nova pessoa?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (confirmarCadastroPessoa == DialogResult.Yes)
+                {
+                    pessoaId = cadastrarPessoa();
                 }
                 else
                 {
@@ -792,9 +821,7 @@ namespace Sample.Winform
             }
             else
             {
-                JObject pessoaObj = JObject.Parse(obterPessoaContent);
-                pessoaId = pessoaObj["Id"].ToString();
-                MessageBox.Show("Pessoa já cadastrada! Id: " + pessoaId);
+
             }
 
             //Emitir NF
@@ -819,7 +846,7 @@ namespace Sample.Winform
                 ""NomeEstadoTomador"":""" + enderecoObj["NomeEstado"] + @""",
                 ""SiglaEstadoTomador"":""" + enderecoObj["SiglaEstado"] + @""",
                 ""IdMunicipio"":" + enderecoObj["IdMunicipio"] + @",
-                ""CodigoIbgeMunicipioTomador"":" + municipioObj["Dados"][0]["CodigoIbge"] + @",
+                ""CodigoIbgeMunicipioTomador"":" + enderecoObj["CodigoIbge"] + @",
                 ""NomeMunicipioTomador"":""" + textBoxCidade.Text + @""",
                 ""DescricaoEndereco"":""" + textBoxEndereco.Text + @""",
                 ""ValorTotalServicos"":" + textBoxValor.Text + @",
@@ -833,24 +860,7 @@ namespace Sample.Winform
                     ""ValorUnitario"":" + textBoxValor.Text + @",
                     ""ValorBruto"":" + textBoxValor.Text + @",
                     ""ValorLiquido"":" + textBoxValor.Text + @",
-                    ""Id"":0,
-                    ""_TempId"":"""",
-                    ""ValorDesconto"":0,
-                    ""IdEstruturaPadraoCNAE"":null,
-                    ""IdServicoLei116"":null,
-                    ""DescricaoCNAE"":null,
-                    ""DescricaoLei"":null,
-                    ""Quantidade"":1,
-                    ""FlPermiteTrocaMunInc"":false,
-                    ""FlMunicipioIncidenciaTomador"":false,
-                    ""IdEconomicoParceiro"":null,
-                    ""IdRelacaoEconomicoParceiro"":null,
-                    ""PercentualRetencao"":null,
-                    ""ValorRetidoBaseCalculoISSQN"":0,
-                    ""NomeRazaoSocialParceiro"":"""",
-                    ""TipoPessoaParceiro"":"""",
-                    ""CpfCnpjParceiro"":"""",
-                    ""InscricaoMunicipalParceiro"":""""
+                    ""Id"":0,""_TempId"":"""",""ValorDesconto"":0,""IdEstruturaPadraoCNAE"":null,""IdServicoLei116"":null,""DescricaoCNAE"":null,""DescricaoLei"":null,""Quantidade"":1,""FlPermiteTrocaMunInc"":false,""FlMunicipioIncidenciaTomador"":false,""IdEconomicoParceiro"":null,""IdRelacaoEconomicoParceiro"":null,""PercentualRetencao"":null,""ValorRetidoBaseCalculoISSQN"":0,""NomeRazaoSocialParceiro"":"""",""TipoPessoaParceiro"":"""",""CpfCnpjParceiro"":"""",""InscricaoMunicipalParceiro"":""""
                 }
                 ]
                 }";
@@ -859,22 +869,20 @@ namespace Sample.Winform
                 if (confirmarEmissao == DialogResult.Yes)
                 {
                     var emitirNfRequest = new StringContent(nfJson, Encoding.UTF8, "application/x-www-form-urlencoded");
-                    HttpResponseMessage emitirNfResponse = client.PostAsync(emitirNFUrl, emitirNfRequest).Result;
+                    HttpResponseMessage emitirNfResponse = _client.PostAsync(emitirNFUrl, emitirNfRequest).Result;
                     emitirNfResponse.EnsureSuccessStatusCode();
                     string emitirNfContent = emitirNfResponse.Content.ReadAsStringAsync().Result;
 
                     var emitirNfCompletedRequest = new StringContent($"id={emitirNfContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
-                    HttpResponseMessage emitirNfCompletedResponse = client.PostAsync(emitirNFCompletedUrl, emitirNfCompletedRequest).Result;
+                    HttpResponseMessage emitirNfCompletedResponse = _client.PostAsync(emitirNFCompletedUrl, emitirNfCompletedRequest).Result;
                     emitirNfCompletedResponse.EnsureSuccessStatusCode();
                     string nfResult = emitirNfCompletedResponse.Content.ReadAsStringAsync().Result;
                     JObject nfResultJson = JObject.Parse(nfResult);
-                    if (nfResultJson["Dados"].Count() > 0) {   
-                        MessageBox.Show("Erros: " + nfResult);
-                        return false;
-                    }
-                    else
+                    // verifica erros
+                    if (nfResultJson["Dados"].Count() > 0)
                     {
-                        return true;
+                        MessageBox.Show("Erro: " + nfResult);
+                        return false;
                     }
 
                 }
@@ -884,8 +892,24 @@ namespace Sample.Winform
                 }
             }
 
+            //fim da emissão. supostamente com sucesso.
             return true;
         }
 
+        private void btnPesquisar_Click(object sender, EventArgs e)
+        {
+            if (textBoxCPF.Text.Length < 11)
+            {
+                MessageBox.Show("CPF inválido!");
+                return;
+            }
+
+            fazerLogin();
+            consultarPessoa();
+            if (textBoxCEP.Text.Length > 0)
+            {
+                obterEndereco();
+            }
+        }
     }
 }
