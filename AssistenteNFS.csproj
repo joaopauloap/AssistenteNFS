@@ -152,6 +152,9 @@
     <None Include="app.config" />
     <None Include="AssistenteNFS_TemporaryKey.pfx" />
     <None Include="packages.config" />
+    <None Include="Properties\config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\properties.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

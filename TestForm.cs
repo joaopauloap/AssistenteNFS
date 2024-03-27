@@ -25,8 +25,8 @@ namespace Sample.Winform
         bool _stopScan;
         bool _loadingCaps;
         string ocrOutput;
-        string url_base = "";
-        string url_emitirNF = "";
+        static string configJson = File.ReadAllText("properties/config.json");
+        JObject configObj = JObject.Parse(configJson);
 
         public string extrairDados(string ocrtext)
         {
@@ -136,6 +136,7 @@ namespace Sample.Winform
 
         public void IniciarOCR()
         {
+            //TODO configurar quando usar o bmp pelo picturebox ou pela variavel img
             Bitmap bmp = new Bitmap(pictureBox1.Image);
             Pix pic = PixConverter.ToPix(bmp);
             var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
@@ -521,7 +522,7 @@ namespace Sample.Winform
 
         private void btnSaveFile_Click(object sender, EventArgs e)
         {
-            if (pictureBox1.Image != null)
+            if (img != null)
             {
                 saveFileDialog1.Title = "Salvar imagem";
                 saveFileDialog1.Filter = "Jpeg Image|*.jpg";
@@ -530,7 +531,7 @@ namespace Sample.Winform
                 if (saveFileDialog1.FileName != "")
                 {
                     System.IO.FileStream fs = (System.IO.FileStream)saveFileDialog1.OpenFile();
-                    pictureBox1.Image.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    img.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
                     fs.Close();
                 }
             }
@@ -540,17 +541,18 @@ namespace Sample.Winform
         private void TestForm_Load(object sender, EventArgs e)
         {
             comboBox1.SelectedIndex = 0;
-
-            //foreach (var item in _twain)
-            //{
-            //    if (item.Open() == ReturnCode.Success)
-            //    {
-            //        btnStartCapture.Enabled = true;
-            //        LoadSourceCaps();
-            //        break;
-            //    }
-            //}
-
+            if (configObj["selectScan0"].Equals(true))
+            {
+                foreach (var item in _twain)
+                {
+                    if (item.Open() == ReturnCode.Success)
+                    {
+                        btnStartCapture.Enabled = true;
+                        LoadSourceCaps();
+                        break;
+                    }
+                }
+            }
         }
         private Image CropImage(Image img, Rectangle rect)
         {
@@ -575,15 +577,6 @@ namespace Sample.Winform
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if (comboBox1.SelectedIndex == 0)
-            //{
-            //    tableLayoutPanel6.Visible = true;
-            //}
-            //else
-            //{
-            //    tableLayoutPanel6.Visible = false;
-            //}
-
             if (pictureBox1.Image != null)
             {
                 ProcessarDados(ocrOutput);
@@ -607,8 +600,8 @@ namespace Sample.Winform
 
         private void btnLimpar_Click(object sender, EventArgs e)
         {
-            textBoxUF.Select();
-            textBoxCidade.Select();
+            textBoxUF.Clear();
+            textBoxCidade.Clear();
             textBoxCPF.Clear();
             textBoxNome.Clear();
             textBoxCEP.Clear();
@@ -697,6 +690,7 @@ namespace Sample.Winform
             string obterMunicipioUrl = obj["emissaoNF"]["obterMunicipio"].ToString();
             string cadastrarPessoaUrl = obj["emissaoNF"]["cadastrarPessoa"].ToString();
             string emitirNFUrl = obj["emissaoNF"]["emitirNF"].ToString();
+            string emitirNFCompletedUrl = obj["emissaoNF"]["emitirNFCompleted"].ToString();
             string nfBody = obj["emissaoNF"]["body"].ToString();
 
             var handler = new HttpClientHandler();
@@ -816,7 +810,7 @@ namespace Sample.Winform
                 ""NomeRazaoSocialTomador"":""" + textBoxNome.Text.ToUpper() + @""",
                 ""TipoPessoa"":1,
                 ""CPFCNPJTomador"":""" + textBoxCPF.Text + @""",
-                ""CepTomador\"":""" + textBoxCEP.Text + @""",
+                ""CepTomador"":""" + textBoxCEP.Text + @""",
                 ""IdEnderecamentoPostal"":" + enderecoObj["Id"] + @",
                 ""IdPais"":-31,
                 ""CodigoPaisTomador"":1058,
@@ -867,8 +861,22 @@ namespace Sample.Winform
                     var emitirNfRequest = new StringContent(nfJson, Encoding.UTF8, "application/x-www-form-urlencoded");
                     HttpResponseMessage emitirNfResponse = client.PostAsync(emitirNFUrl, emitirNfRequest).Result;
                     emitirNfResponse.EnsureSuccessStatusCode();
-                    string nfResult = emitirNfResponse.Content.ReadAsStringAsync().Result;
-                    MessageBox.Show(nfResult);
+                    string emitirNfContent = emitirNfResponse.Content.ReadAsStringAsync().Result;
+
+                    var emitirNfCompletedRequest = new StringContent($"id={emitirNfContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
+                    HttpResponseMessage emitirNfCompletedResponse = client.PostAsync(emitirNFCompletedUrl, emitirNfCompletedRequest).Result;
+                    emitirNfCompletedResponse.EnsureSuccessStatusCode();
+                    string nfResult = emitirNfCompletedResponse.Content.ReadAsStringAsync().Result;
+                    JObject nfResultJson = JObject.Parse(nfResult);
+                    if (nfResultJson["Dados"].Count() > 0) {   
+                        MessageBox.Show("Erros: " + nfResult);
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
                 }
                 else
                 {
