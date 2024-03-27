@@ -1,1 +1,1 @@
-Programa específico de uma empresa 'x' para facilitar a emissão de notas de serviço, fazendo OCR na autorização e extraindo os dados pertinentes para gerar o texto padronizado utilizado na observação da nota fiscal. Também lê o código de barras dentro de um pdf.
+Programa específico de uma empresa 'x' para facilitar a emissão de notas fiscais de serviço. Faz OCR em uma guia de autorização e extrai os dados pertinentes, preenche um formulario e emite a nota fiscal através de requisições a api da empresa. Também lê o código de barras dentro de um pdf.
