@@ -15,6 +15,8 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Bson;
+using System.Diagnostics;
+using System.Security.Policy;
 
 namespace Sample.Winform
 {
@@ -148,8 +150,9 @@ namespace Sample.Winform
 
         public void IniciarOCR()
         {
-            //TODO configurar quando usar o bmp pelo picturebox ou pela variavel img
-            Bitmap bmp = new Bitmap(pictureBox1.Image);
+            Bitmap bmp;
+            if ((bool)configObj["OcrPicturebox"]) bmp = new Bitmap(pictureBox1.Image);
+            else bmp = (Bitmap)img;
             Pix pic = PixConverter.ToPix(bmp);
             var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
             var page = engine.Process(pic);
@@ -550,8 +553,9 @@ namespace Sample.Winform
 
         private void TestForm_Load(object sender, EventArgs e)
         {
-            comboBox1.SelectedIndex = 0;
-            if (configObj["selectScan0"].Equals(true))
+            if ((bool)configObj["autoLogin"])   fazerLogin();
+
+            if ((bool)configObj["selectScan0"])
             {
                 foreach (var item in _twain)
                 {
@@ -563,6 +567,7 @@ namespace Sample.Winform
                     }
                 }
             }
+            comboBox1.SelectedIndex = 0;
         }
         private Image CropImage(Image img, Rectangle rect)
         {
@@ -688,6 +693,8 @@ namespace Sample.Winform
         {
             string tokenUrl = propertiesObj["token"]["url"].ToString();
             string tokenParams = propertiesObj["token"]["params"].ToString();
+            string competenciasUrl = propertiesObj["competencias"]["url"].ToString();
+            string competenciasParams = propertiesObj["competencias"]["params"].ToString();
             string loginUrl = propertiesObj["login"]["url"].ToString();
             string loginParams = propertiesObj["login"]["params"].ToString();
             //token
@@ -695,6 +702,17 @@ namespace Sample.Winform
             HttpResponseMessage tokenResponse = _client.PostAsync(tokenUrl, tokenRequest).Result;
             tokenResponse.EnsureSuccessStatusCode();
             //string tokenContent = await tokenResponse.Content.ReadAsStringAsync();
+
+            //competencias
+            var competenciasRequest = new StringContent(competenciasParams, Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage competenciasResponse = _client.PostAsync(competenciasUrl, competenciasRequest).Result;
+            competenciasResponse.EnsureSuccessStatusCode();
+            string competenciasContent = competenciasResponse.Content.ReadAsStringAsync().Result;
+            JObject competenciasObj = JObject.Parse(competenciasContent);
+            //TODO
+            //loginParams += $"\"Competencia\":{competenciasObj["Dados"][0]["Id"]}" + "}";
+            loginParams += $"\"Competencia\":50635";
+
 
             //login 
             var loginRequest = new StringContent(loginParams, Encoding.UTF8, "application/x-www-form-urlencoded");
@@ -797,9 +815,6 @@ namespace Sample.Winform
         }
         Boolean emitirNotaFiscalAsync()
         {
-
-            fazerLogin();
-
             string emitirNFUrl = propertiesObj["emissaoNF"]["emitirNF"].ToString();
             string emitirNFCompletedUrl = propertiesObj["emissaoNF"]["emitirNFCompleted"].ToString();
             string nfBody = propertiesObj["emissaoNF"]["body"].ToString();
@@ -878,13 +893,14 @@ namespace Sample.Winform
                     emitirNfCompletedResponse.EnsureSuccessStatusCode();
                     string nfResult = emitirNfCompletedResponse.Content.ReadAsStringAsync().Result;
                     JObject nfResultJson = JObject.Parse(nfResult);
-                    // verifica erros
+                    // erros
                     if (nfResultJson["Dados"].Count() > 0)
                     {
                         MessageBox.Show("Erro: " + nfResult);
                         return false;
                     }
 
+                    abrirImpressaoNf();
                 }
                 else
                 {
@@ -896,6 +912,31 @@ namespace Sample.Winform
             return true;
         }
 
+        //TODO: Melhorar. Atualmente está abrindo a ultima NF para impressão.
+        void abrirImpressaoNf()
+        {
+            string listarNfsUrl = propertiesObj["emissaoNF"]["listarNfs"].ToString();
+            string listarNfsParams = "filter={\"NumeroDocumento\":\"\",\"NumeroRPS\":\"\",\"cmbTipo\":[1,1],\"IdPessoaPrestadora\":\"\",\"IdEconomicoPrestador\":\"\",\"IdPessoaTomadora\":\"\",\"IdEconomicoTomador\":\"\",\"IdMunicipioIncidencia\":\"\",\"DataEmissaoInicio\":\"\",\"DataEmissaoFim\":\"\",\"IdTributacao\":\"\",\"IdResponsavelISSQN\":\"\",\"ApenasCanceladas\":\"\"}&page=1&start=0&limit=1";
+
+            var listarNfsRequest = new StringContent(listarNfsParams, Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage listarNfsResponse = _client.PostAsync(listarNfsUrl, listarNfsRequest).Result;
+            listarNfsResponse.EnsureSuccessStatusCode();
+            string listarNfsContent = listarNfsResponse.Content.ReadAsStringAsync().Result;
+            JObject listaNfsObj = JObject.Parse(listarNfsContent);
+            string ultimaNfId = listaNfsObj["Dados"][0]["Id"].ToString();
+
+            string obterNfUrl = propertiesObj["emissaoNF"]["obterNfPorId"].ToString();
+            var obterNfRequest = new StringContent($"value={ultimaNfId}", Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage obterNfResponse = _client.PostAsync(obterNfUrl, obterNfRequest).Result;
+            obterNfResponse.EnsureSuccessStatusCode();
+            string nfContent = obterNfResponse.Content.ReadAsStringAsync().Result;
+            JObject nfObj = JObject.Parse(nfContent);
+            string codAutNf = nfObj["CodigoAutenticidade"].ToString();
+
+            string abrirNfCodUrl = propertiesObj["emissaoNF"]["abrirNfCodAut"].ToString();
+            Process.Start(new ProcessStartInfo(abrirNfCodUrl+codAutNf) { UseShellExecute = true });
+        }
+
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
             if (textBoxCPF.Text.Length < 11)
@@ -904,7 +945,6 @@ namespace Sample.Winform
                 return;
             }
 
-            fazerLogin();
             consultarPessoa();
             if (textBoxCEP.Text.Length > 0)
             {

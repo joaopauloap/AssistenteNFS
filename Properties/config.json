@@ -1,3 +1,5 @@
 {
-  "selectScan0":false
+  "autoLogin": true,
+  "selectScan0": false,
+  "OcrPicturebox": true
 }
