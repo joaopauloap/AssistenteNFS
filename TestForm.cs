@@ -636,7 +636,7 @@ namespace Sample.Winform
 
         private void btnLimpar_Click(object sender, EventArgs e)
         {
-            textBoxUF.Clear();
+            textBoxEstado.Clear();
             textBoxCidade.Clear();
             textBoxCPF.Clear();
             textBoxNome.Clear();
@@ -684,7 +684,7 @@ namespace Sample.Winform
             if (textBoxCPF.Text.Length < 11) { throw new Exception("CPF inválido!"); }
             if (textBoxNome.Text.Length < 6) { throw new Exception("Nome inválido!"); }
             if (textBoxCEP.Text.Length < 8) { throw new Exception("CEP inválido!"); }
-            if (textBoxUF.Text.Length < 2) { throw new Exception("Estado inválido!"); }
+            if (textBoxEstado.Text.Length < 2) { throw new Exception("Estado inválido!"); }
             if (textBoxCidade.Text.Length < 2) { throw new Exception("Cidade inválida!"); }
             if (textBoxEndereco.Text.Length < 2) { throw new Exception("Endereço inválido!"); }
             if (textBoxDescricao.Text.Length < 4) { throw new Exception("Descrição inválida!"); }
@@ -743,7 +743,7 @@ namespace Sample.Winform
             //string loginContent = await loginResponse.Content.ReadAsStringAsync();
         }
 
-        string consultarPessoa()
+        JObject consultarPessoa()
         {
             string obterPessoaUrl = propertiesObj["emissaoNF"]["obterPessoa"].ToString();
             var obterPessoaRequest = new StringContent($"documento={textBoxCPF.Text}", Encoding.UTF8, "application/x-www-form-urlencoded");
@@ -757,12 +757,7 @@ namespace Sample.Winform
             }
             JObject pessoaObj = JObject.Parse(obterPessoaContent);
             textBoxNome.Text = pessoaObj["NomeRazaoSocial"].ToString();
-            if (pessoaObj["EnderecosPessoa"] != null && pessoaObj["EnderecosPessoa"].Type == JTokenType.Array && pessoaObj["EnderecosPessoa"].Any())
-            {
-                textBoxCEP.Text = pessoaObj["EnderecosPessoa"][0]["Cep"].ToString();
-            }
-            string pessoaId = pessoaObj["Id"].ToString();
-            return pessoaId;
+            return pessoaObj;
         }
 
         string cadastrarPessoa()
@@ -796,6 +791,7 @@ namespace Sample.Winform
             return pessoaId;
         }
 
+        //TODO: Melhorar requisição e remover delay
         JObject obterEndereco()
         {
             string obterEnderecoAsyncUrl = propertiesObj["emissaoNF"]["obterEnderecoAsync"].ToString();
@@ -810,16 +806,14 @@ namespace Sample.Winform
             HttpResponseMessage obterEnderecoAsyncResponse = _client.PostAsync(obterEnderecoAsyncUrl, obterEnderecoAsyncRequest).Result;
             obterEnderecoAsyncResponse.EnsureSuccessStatusCode();
             string obterEnderecoAsyncContent = obterEnderecoAsyncResponse.Content.ReadAsStringAsync().Result;
-            Thread.Sleep(10000); //TODO melhorar
+            Thread.Sleep(5000); //TODO melhorar
             var obterEnderecoRequest = new StringContent($"id={obterEnderecoAsyncContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
             HttpResponseMessage obterEnderecoResponse = _client.PostAsync(obterEnderecoUrl, obterEnderecoRequest).Result;
             obterEnderecoResponse.EnsureSuccessStatusCode();
             string obterEnderecoContent = obterEnderecoResponse.Content.ReadAsStringAsync().Result;
             if (obterEnderecoContent == null || obterEnderecoContent.Equals(""))
-            {
-                MessageBox.Show("Endereço não encontrado!");
-                return null;
-            }
+                throw new Exception("Endereço não encontrado para este CEP!");
+
             enderecoObj = JObject.Parse(obterEnderecoContent);
 
             //obtendo municipio apenas pra pegar CodigoIbge
@@ -831,7 +825,7 @@ namespace Sample.Winform
             enderecoObj["CodigoIbge"] = municipioObj["Dados"][0]["CodigoIbge"];
 
             textBoxCEP.Text = textBoxCEP.Text.Replace(" - ", "");
-            textBoxUF.Text = enderecoObj["NomeEstado"].ToString();
+            textBoxEstado.Text = enderecoObj["NomeEstado"].ToString();
             textBoxCidade.Text = enderecoObj["NomeMunicipio"].ToString().ToUpper();
             if (enderecoObj["DescricaoEndereco"].ToString().Length > 1)
             {
@@ -847,7 +841,7 @@ namespace Sample.Winform
             string emitirNFUrl = propertiesObj["emissaoNF"]["emitirNF"].ToString();
             string emitirNFCompletedUrl = propertiesObj["emissaoNF"]["emitirNFCompleted"].ToString();
             string nfBody = propertiesObj["emissaoNF"]["body"].ToString();
-            string pessoaId = consultarPessoa();
+            string pessoaId = consultarPessoa()["Id"].ToString();
             JObject enderecoObj = obterEndereco();
 
             if (pessoaId == null || pessoaId.Equals(""))
@@ -969,11 +963,21 @@ namespace Sample.Winform
                 return;
             }
 
-            consultarPessoa();
-            if (textBoxCEP.Text.Length > 0)
+            JObject pessoaObj = consultarPessoa();
+            
+            if (pessoaObj["EnderecosPessoa"] != null && pessoaObj["EnderecosPessoa"].Type == JTokenType.Array && pessoaObj["EnderecosPessoa"].Any())
             {
-                obterEndereco();
+                textBoxCEP.Text = pessoaObj["EnderecosPessoa"][0]["Cep"].ToString();
+                try
+                {
+                    obterEndereco();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Erro: " + ex.Message);
+                }
             }
+
         }
     }
 }
