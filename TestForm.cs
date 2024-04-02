@@ -30,8 +30,8 @@ namespace Sample.Winform
         string ocrOutput;
         static string configJson = File.ReadAllText("properties/config.json");
         JObject configObj = JObject.Parse(configJson);
-        HttpClientHandler _handler;
         HttpClient _client;
+        HttpClientHandler _handler;
         static string propertiesJson = File.ReadAllText("properties/properties.json");
         JObject propertiesObj = JObject.Parse(propertiesJson);
 
@@ -134,11 +134,32 @@ namespace Sample.Winform
         {
             if (comboBox1.SelectedIndex == 0)
             {
-                observacao.Text = extrairDados(ocrtext);
+                try
+                {
+                    observacao.Text = extrairDados(ocrtext);
+                }
+                catch (ArgumentOutOfRangeException ex) {
+                    MessageBox.Show("Parâmetro esperado não encontrado no documento!");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ocorreu um erro: " + ex.Message);
+                }
             }
             else if (comboBox1.SelectedIndex == 1)
             {
-                observacao.Text = ExtrairChaveDANFe(ocrtext);
+                try
+                {
+                    observacao.Text = ExtrairChaveDANFe(ocrtext);
+                }
+                catch (ArgumentOutOfRangeException ex)
+                {
+                    MessageBox.Show("Não foi possível detectar a chave de acesso NFe no documento!");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ocorreu um erro: " + ex.Message);
+                }
             }
             else
             {
@@ -553,7 +574,7 @@ namespace Sample.Winform
 
         private void TestForm_Load(object sender, EventArgs e)
         {
-            if ((bool)configObj["autoLogin"])   fazerLogin();
+            if ((bool)configObj["autoLogin"]) fazerLogin();
 
             if ((bool)configObj["selectScan0"])
             {
@@ -689,6 +710,7 @@ namespace Sample.Winform
             }
         }
 
+        //TODO: Descobrir codigo de competencia
         void fazerLogin()
         {
             string tokenUrl = propertiesObj["token"]["url"].ToString();
@@ -788,11 +810,16 @@ namespace Sample.Winform
             HttpResponseMessage obterEnderecoAsyncResponse = _client.PostAsync(obterEnderecoAsyncUrl, obterEnderecoAsyncRequest).Result;
             obterEnderecoAsyncResponse.EnsureSuccessStatusCode();
             string obterEnderecoAsyncContent = obterEnderecoAsyncResponse.Content.ReadAsStringAsync().Result;
-            Thread.Sleep(5000); //TODO melhorar
+            Thread.Sleep(10000); //TODO melhorar
             var obterEnderecoRequest = new StringContent($"id={obterEnderecoAsyncContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
             HttpResponseMessage obterEnderecoResponse = _client.PostAsync(obterEnderecoUrl, obterEnderecoRequest).Result;
             obterEnderecoResponse.EnsureSuccessStatusCode();
             string obterEnderecoContent = obterEnderecoResponse.Content.ReadAsStringAsync().Result;
+            if (obterEnderecoContent == null || obterEnderecoContent.Equals(""))
+            {
+                MessageBox.Show("Endereço não encontrado!");
+                return null;
+            }
             enderecoObj = JObject.Parse(obterEnderecoContent);
 
             //obtendo municipio apenas pra pegar CodigoIbge
@@ -815,6 +842,8 @@ namespace Sample.Winform
         }
         Boolean emitirNotaFiscalAsync()
         {
+            if (_client.BaseAddress == null) fazerLogin();
+
             string emitirNFUrl = propertiesObj["emissaoNF"]["emitirNF"].ToString();
             string emitirNFCompletedUrl = propertiesObj["emissaoNF"]["emitirNFCompleted"].ToString();
             string nfBody = propertiesObj["emissaoNF"]["body"].ToString();
@@ -834,12 +863,9 @@ namespace Sample.Winform
                     return false;
                 }
             }
-            else
-            {
-
-            }
 
             //Emitir NF
+            //TODO: Melhorar. Adicionar modelo completo em json no properties
             if (validarCamposFinais())
             {
                 DateTime now = DateTime.Now;
@@ -850,13 +876,9 @@ namespace Sample.Winform
                 ""Observacao"":""" + observacao.Text + @""",
                 ""IdPessoaTomador"":" + pessoaId + @",
                 ""NomeRazaoSocialTomador"":""" + textBoxNome.Text.ToUpper() + @""",
-                ""TipoPessoa"":1,
                 ""CPFCNPJTomador"":""" + textBoxCPF.Text + @""",
                 ""CepTomador"":""" + textBoxCEP.Text + @""",
                 ""IdEnderecamentoPostal"":" + enderecoObj["Id"] + @",
-                ""IdPais"":-31,
-                ""CodigoPaisTomador"":1058,
-                ""NomePaisTomador"":""BRASIL"",
                 ""IdEstado"":" + enderecoObj["IdEstado"] + @",
                 ""NomeEstadoTomador"":""" + enderecoObj["NomeEstado"] + @""",
                 ""SiglaEstadoTomador"":""" + enderecoObj["SiglaEstado"] + @""",
@@ -867,7 +889,6 @@ namespace Sample.Winform
                 ""ValorTotalServicos"":" + textBoxValor.Text + @",
                 ""ValorTotalLiquido"":" + textBoxValor.Text + @",
                 ""BaseCalculoISSQN"":" + textBoxValor.Text + @",
-                ""AliquotaISSQN"":5,
                 ""TotalISSQNCalculado"":" + Int32.Parse(textBoxValor.Text) * 0.05 + @",
                 ""Servicos"":[
                 {
@@ -934,11 +955,14 @@ namespace Sample.Winform
             string codAutNf = nfObj["CodigoAutenticidade"].ToString();
 
             string abrirNfCodUrl = propertiesObj["emissaoNF"]["abrirNfCodAut"].ToString();
-            Process.Start(new ProcessStartInfo(abrirNfCodUrl+codAutNf) { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo(abrirNfCodUrl + codAutNf) { UseShellExecute = true });
         }
 
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
+
+            if (_client.BaseAddress == null)    fazerLogin();
+
             if (textBoxCPF.Text.Length < 11)
             {
                 MessageBox.Show("CPF inválido!");
