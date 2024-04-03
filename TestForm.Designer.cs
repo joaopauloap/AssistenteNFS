@@ -57,11 +57,15 @@
             this.btnEmitir = new System.Windows.Forms.Button();
             this.tableLayoutPanelCPF = new System.Windows.Forms.TableLayoutPanel();
             this.groupBoxCPF = new System.Windows.Forms.GroupBox();
-            this.btnPesquisar = new System.Windows.Forms.Button();
+            this.btnPesquisarPessoa = new System.Windows.Forms.Button();
             this.textBoxCPF = new System.Windows.Forms.TextBox();
             this.groupBoxNome = new System.Windows.Forms.GroupBox();
             this.textBoxNome = new System.Windows.Forms.TextBox();
             this.tableLayoutPanelEndereco = new System.Windows.Forms.TableLayoutPanel();
+            this.groupBoxNumero = new System.Windows.Forms.GroupBox();
+            this.textBoxNumero = new System.Windows.Forms.TextBox();
+            this.groupBoxBairro = new System.Windows.Forms.GroupBox();
+            this.textBoxBairro = new System.Windows.Forms.TextBox();
             this.groupBoxEndereco = new System.Windows.Forms.GroupBox();
             this.textBoxEndereco = new System.Windows.Forms.TextBox();
             this.groupBoxObservacoes = new System.Windows.Forms.GroupBox();
@@ -78,10 +82,7 @@
             this.groupDepth = new System.Windows.Forms.GroupBox();
             this.comboDepth = new System.Windows.Forms.ComboBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.groupBoxBairro = new System.Windows.Forms.GroupBox();
-            this.textBoxBairro = new System.Windows.Forms.TextBox();
-            this.groupBoxNumero = new System.Windows.Forms.GroupBox();
-            this.textBoxNumero = new System.Windows.Forms.TextBox();
+            this.btnPesquisarEndereco = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanelContainer.SuspendLayout();
@@ -98,6 +99,8 @@
             this.groupBoxCPF.SuspendLayout();
             this.groupBoxNome.SuspendLayout();
             this.tableLayoutPanelEndereco.SuspendLayout();
+            this.groupBoxNumero.SuspendLayout();
+            this.groupBoxBairro.SuspendLayout();
             this.groupBoxEndereco.SuspendLayout();
             this.groupBoxObservacoes.SuspendLayout();
             this.panelOptions.SuspendLayout();
@@ -105,8 +108,6 @@
             this.groupSize.SuspendLayout();
             this.groupDPI.SuspendLayout();
             this.groupDepth.SuspendLayout();
-            this.groupBoxBairro.SuspendLayout();
-            this.groupBoxNumero.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -305,6 +306,7 @@
             // 
             // groupBoxCEP
             // 
+            this.groupBoxCEP.Controls.Add(this.btnPesquisarEndereco);
             this.groupBoxCEP.Controls.Add(this.textBoxCEP);
             this.groupBoxCEP.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxCEP.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F);
@@ -450,7 +452,7 @@
             // 
             // groupBoxCPF
             // 
-            this.groupBoxCPF.Controls.Add(this.btnPesquisar);
+            this.groupBoxCPF.Controls.Add(this.btnPesquisarPessoa);
             this.groupBoxCPF.Controls.Add(this.textBoxCPF);
             this.groupBoxCPF.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxCPF.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -462,16 +464,16 @@
             this.groupBoxCPF.TabStop = false;
             this.groupBoxCPF.Text = "CPF/CNPJ";
             // 
-            // btnPesquisar
+            // btnPesquisarPessoa
             // 
-            this.btnPesquisar.BackColor = System.Drawing.Color.LightBlue;
-            this.btnPesquisar.Location = new System.Drawing.Point(104, 2);
-            this.btnPesquisar.Name = "btnPesquisar";
-            this.btnPesquisar.Size = new System.Drawing.Size(29, 18);
-            this.btnPesquisar.TabIndex = 0;
-            this.btnPesquisar.TabStop = false;
-            this.btnPesquisar.UseVisualStyleBackColor = false;
-            this.btnPesquisar.Click += new System.EventHandler(this.btnPesquisar_Click);
+            this.btnPesquisarPessoa.BackColor = System.Drawing.Color.LightBlue;
+            this.btnPesquisarPessoa.Location = new System.Drawing.Point(104, 2);
+            this.btnPesquisarPessoa.Name = "btnPesquisarPessoa";
+            this.btnPesquisarPessoa.Size = new System.Drawing.Size(29, 18);
+            this.btnPesquisarPessoa.TabIndex = 0;
+            this.btnPesquisarPessoa.TabStop = false;
+            this.btnPesquisarPessoa.UseVisualStyleBackColor = false;
+            this.btnPesquisarPessoa.Click += new System.EventHandler(this.btnPesquisarPessoa_Click);
             // 
             // textBoxCPF
             // 
@@ -522,6 +524,54 @@
             this.tableLayoutPanelEndereco.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelEndereco.Size = new System.Drawing.Size(464, 34);
             this.tableLayoutPanelEndereco.TabIndex = 3;
+            // 
+            // groupBoxNumero
+            // 
+            this.groupBoxNumero.Controls.Add(this.textBoxNumero);
+            this.groupBoxNumero.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxNumero.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F);
+            this.groupBoxNumero.Location = new System.Drawing.Point(420, 0);
+            this.groupBoxNumero.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.groupBoxNumero.Name = "groupBoxNumero";
+            this.groupBoxNumero.Size = new System.Drawing.Size(41, 34);
+            this.groupBoxNumero.TabIndex = 7;
+            this.groupBoxNumero.TabStop = false;
+            this.groupBoxNumero.Text = "Nº";
+            // 
+            // textBoxNumero
+            // 
+            this.textBoxNumero.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.textBoxNumero.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxNumero.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxNumero.Location = new System.Drawing.Point(3, 23);
+            this.textBoxNumero.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.textBoxNumero.Name = "textBoxNumero";
+            this.textBoxNumero.Size = new System.Drawing.Size(35, 30);
+            this.textBoxNumero.TabIndex = 6;
+            // 
+            // groupBoxBairro
+            // 
+            this.groupBoxBairro.Controls.Add(this.textBoxBairro);
+            this.groupBoxBairro.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxBairro.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F);
+            this.groupBoxBairro.Location = new System.Drawing.Point(281, 0);
+            this.groupBoxBairro.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.groupBoxBairro.Name = "groupBoxBairro";
+            this.groupBoxBairro.Size = new System.Drawing.Size(133, 34);
+            this.groupBoxBairro.TabIndex = 6;
+            this.groupBoxBairro.TabStop = false;
+            this.groupBoxBairro.Text = "Bairro";
+            // 
+            // textBoxBairro
+            // 
+            this.textBoxBairro.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.textBoxBairro.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxBairro.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxBairro.Location = new System.Drawing.Point(3, 23);
+            this.textBoxBairro.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.textBoxBairro.Name = "textBoxBairro";
+            this.textBoxBairro.Size = new System.Drawing.Size(127, 30);
+            this.textBoxBairro.TabIndex = 6;
             // 
             // groupBoxEndereco
             // 
@@ -736,53 +786,16 @@
             this.comboDepth.TabStop = false;
             this.comboDepth.SelectedIndexChanged += new System.EventHandler(this.comboDepth_SelectedIndexChanged);
             // 
-            // groupBoxBairro
+            // btnPesquisarEndereco
             // 
-            this.groupBoxBairro.Controls.Add(this.textBoxBairro);
-            this.groupBoxBairro.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxBairro.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F);
-            this.groupBoxBairro.Location = new System.Drawing.Point(281, 0);
-            this.groupBoxBairro.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.groupBoxBairro.Name = "groupBoxBairro";
-            this.groupBoxBairro.Size = new System.Drawing.Size(133, 34);
-            this.groupBoxBairro.TabIndex = 6;
-            this.groupBoxBairro.TabStop = false;
-            this.groupBoxBairro.Text = "Bairro";
-            // 
-            // textBoxBairro
-            // 
-            this.textBoxBairro.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.textBoxBairro.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxBairro.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxBairro.Location = new System.Drawing.Point(3, 23);
-            this.textBoxBairro.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.textBoxBairro.Name = "textBoxBairro";
-            this.textBoxBairro.Size = new System.Drawing.Size(127, 30);
-            this.textBoxBairro.TabIndex = 6;
-            // 
-            // groupBoxNumero
-            // 
-            this.groupBoxNumero.Controls.Add(this.textBoxNumero);
-            this.groupBoxNumero.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxNumero.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F);
-            this.groupBoxNumero.Location = new System.Drawing.Point(420, 0);
-            this.groupBoxNumero.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.groupBoxNumero.Name = "groupBoxNumero";
-            this.groupBoxNumero.Size = new System.Drawing.Size(41, 34);
-            this.groupBoxNumero.TabIndex = 7;
-            this.groupBoxNumero.TabStop = false;
-            this.groupBoxNumero.Text = "Num";
-            // 
-            // textBoxNumero
-            // 
-            this.textBoxNumero.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.textBoxNumero.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxNumero.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxNumero.Location = new System.Drawing.Point(3, 23);
-            this.textBoxNumero.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.textBoxNumero.Name = "textBoxNumero";
-            this.textBoxNumero.Size = new System.Drawing.Size(35, 30);
-            this.textBoxNumero.TabIndex = 6;
+            this.btnPesquisarEndereco.BackColor = System.Drawing.Color.LightBlue;
+            this.btnPesquisarEndereco.Location = new System.Drawing.Point(69, 0);
+            this.btnPesquisarEndereco.Name = "btnPesquisarEndereco";
+            this.btnPesquisarEndereco.Size = new System.Drawing.Size(29, 18);
+            this.btnPesquisarEndereco.TabIndex = 1;
+            this.btnPesquisarEndereco.TabStop = false;
+            this.btnPesquisarEndereco.UseVisualStyleBackColor = false;
+            this.btnPesquisarEndereco.Click += new System.EventHandler(this.btnPesquisarEndereco_Click);
             // 
             // TestForm
             // 
@@ -822,6 +835,10 @@
             this.groupBoxNome.ResumeLayout(false);
             this.groupBoxNome.PerformLayout();
             this.tableLayoutPanelEndereco.ResumeLayout(false);
+            this.groupBoxNumero.ResumeLayout(false);
+            this.groupBoxNumero.PerformLayout();
+            this.groupBoxBairro.ResumeLayout(false);
+            this.groupBoxBairro.PerformLayout();
             this.groupBoxEndereco.ResumeLayout(false);
             this.groupBoxEndereco.PerformLayout();
             this.groupBoxObservacoes.ResumeLayout(false);
@@ -831,10 +848,6 @@
             this.groupSize.ResumeLayout(false);
             this.groupDPI.ResumeLayout(false);
             this.groupDepth.ResumeLayout(false);
-            this.groupBoxBairro.ResumeLayout(false);
-            this.groupBoxBairro.PerformLayout();
-            this.groupBoxNumero.ResumeLayout(false);
-            this.groupBoxNumero.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -889,11 +902,12 @@
         private System.Windows.Forms.TextBox observacao;
         private System.Windows.Forms.Button btnLimpar;
         private System.Windows.Forms.Button btnEmitir;
-        private System.Windows.Forms.Button btnPesquisar;
+        private System.Windows.Forms.Button btnPesquisarPessoa;
         private System.Windows.Forms.GroupBox groupBoxNumero;
         private System.Windows.Forms.TextBox textBoxNumero;
         private System.Windows.Forms.GroupBox groupBoxBairro;
         private System.Windows.Forms.TextBox textBoxBairro;
+        private System.Windows.Forms.Button btnPesquisarEndereco;
     }
 }
 
