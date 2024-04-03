@@ -687,6 +687,8 @@ namespace Sample.Winform
             if (textBoxEstado.Text.Length < 2) { throw new Exception("Estado inválido!"); }
             if (textBoxCidade.Text.Length < 2) { throw new Exception("Cidade inválida!"); }
             if (textBoxEndereco.Text.Length < 2) { throw new Exception("Endereço inválido!"); }
+            if (textBoxBairro.Text.Length < 2) { throw new Exception("Bairro inválido!"); }
+            if (textBoxNumero.Text.Length < 1) { throw new Exception("Numero do endereço inválido!"); }
             if (textBoxDescricao.Text.Length < 4) { throw new Exception("Descrição inválida!"); }
             if (textBoxValor.Text.Length < 2) { throw new Exception("Valor inválido!"); }
             return true;
@@ -731,9 +733,9 @@ namespace Sample.Winform
             competenciasResponse.EnsureSuccessStatusCode();
             string competenciasContent = competenciasResponse.Content.ReadAsStringAsync().Result;
             JObject competenciasObj = JObject.Parse(competenciasContent);
-            //TODO
+            //TODO remover codigo de competencia mocado no properties e obter via requisição
             //loginParams += $"\"Competencia\":{competenciasObj["Dados"][0]["Id"]}" + "}";
-            loginParams += $"\"Competencia\":50635";
+            //loginParams += $"\"Competencia\":50635"; 
 
 
             //login 
@@ -829,7 +831,8 @@ namespace Sample.Winform
             textBoxCidade.Text = enderecoObj["NomeMunicipio"].ToString().ToUpper();
             if (enderecoObj["DescricaoEndereco"].ToString().Length > 1)
             {
-                textBoxEndereco.Text = enderecoObj["DescricaoEndereco"].ToString().ToUpper() + ", ";
+                textBoxBairro.Text = enderecoObj["NomeBairro"].ToString().ToUpper();
+                textBoxEndereco.Text = enderecoObj["DescricaoEndereco"].ToString().ToUpper();
             }
 
             return enderecoObj;
@@ -879,7 +882,9 @@ namespace Sample.Winform
                 ""IdMunicipio"":" + enderecoObj["IdMunicipio"] + @",
                 ""CodigoIbgeMunicipioTomador"":" + enderecoObj["CodigoIbge"] + @",
                 ""NomeMunicipioTomador"":""" + textBoxCidade.Text + @""",
-                ""DescricaoEndereco"":""" + textBoxEndereco.Text + @""",
+                ""DescricaoEndereco"":""" + textBoxEndereco.Text + $", {textBoxNumero}" + @""",
+                ""BairroTomador"":""" + textBoxBairro.Text + @""",
+                ""NumeroTomador"":""" + textBoxNumero.Text + @""",
                 ""ValorTotalServicos"":" + textBoxValor.Text + @",
                 ""ValorTotalLiquido"":" + textBoxValor.Text + @",
                 ""BaseCalculoISSQN"":" + textBoxValor.Text + @",
@@ -902,7 +907,7 @@ namespace Sample.Winform
                     HttpResponseMessage emitirNfResponse = _client.PostAsync(emitirNFUrl, emitirNfRequest).Result;
                     emitirNfResponse.EnsureSuccessStatusCode();
                     string emitirNfContent = emitirNfResponse.Content.ReadAsStringAsync().Result;
-
+                    Thread.Sleep(5000); //TODO melhorar
                     var emitirNfCompletedRequest = new StringContent($"id={emitirNfContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
                     HttpResponseMessage emitirNfCompletedResponse = _client.PostAsync(emitirNFCompletedUrl, emitirNfCompletedRequest).Result;
                     emitirNfCompletedResponse.EnsureSuccessStatusCode();
