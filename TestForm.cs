@@ -780,10 +780,12 @@ namespace Sample.Winform
                     ""IdEstadoNaturalidade"": """ + enderecoObj["IdEstado"] + @""" ,
                     ""IdMunicipioNaturalidade"": """ + enderecoObj["IdMunicipio"] + @""" ,
                     ""IdBairro"": """ + enderecoObj["IdBairro"] + @""" ,
-                    ""Bairro"": """ + textBoxBairro.Text + @""" ,
+                    ""Bairro"": """ + enderecoObj["Bairro"] + @""" ,
                     ""IdTipoLogradouro"":""" + enderecoObj["IdTipoLogradouro"] + @""" ,
                     ""IdLogradouro"":""" + enderecoObj["IdLogradouro"] + @""" ,
-                    ""Logradouro"": """ + textBoxEndereco.Text + @""" ,
+                    ""Logradouro"": """ + enderecoObj["Logradouro"] + @""" ,
+                    ""Numero"": """ + textBoxNumero.Text + @""" ,
+                    ""Complemento"": """ + $"{textBoxEndereco.Text} {textBoxNumero.Text}, {textBoxBairro.Text}"  + @""" ,
                     ""IdEnderecamentoPostal"": """ + enderecoObj["Id"] + @""" ,
                     ""Cep"": """ + enderecoObj["Cep"] + @""" ,
                     ""Municipio"": """ + enderecoObj["NomeMunicipio"] + @""" ,
@@ -998,6 +1000,7 @@ namespace Sample.Winform
 
         private void btnPesquisarEndereco_Click(object sender, EventArgs e)
         {
+            if (_client.BaseAddress == null) fazerLogin();
             try
             {
                 JObject enderecoObj = obterEndereco();
