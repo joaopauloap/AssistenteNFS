@@ -656,7 +656,7 @@ namespace Sample.Winform
             {
                 if (validarCamposIniciais() && emitirNotaFiscalAsync())
                 {
-                    MessageBox.Show($"Nota fiscal emitida com sucesso!");
+                    //MessageBox.Show($"Nota fiscal emitida com sucesso!");
                 }
                 else
                 {
@@ -715,7 +715,6 @@ namespace Sample.Winform
             }
         }
 
-        //TODO: Descobrir codigo de competencia
         void fazerLogin()
         {
             string tokenUrl = propertiesObj["token"]["url"].ToString();
@@ -736,10 +735,7 @@ namespace Sample.Winform
             competenciasResponse.EnsureSuccessStatusCode();
             string competenciasContent = competenciasResponse.Content.ReadAsStringAsync().Result;
             JObject competenciasObj = JObject.Parse(competenciasContent);
-            //TODO remover codigo de competencia mocado no properties e obter via requisição
-            //loginParams += $"\"Competencia\":{competenciasObj["Dados"][0]["Id"]}" + "}";
-            //loginParams += $"\"Competencia\":50635"; 
-
+            loginParams += $"\"Competencia\":{competenciasObj["Dados"].Last["Id"]}" + "}";
 
             //login 
             var loginRequest = new StringContent(loginParams, Encoding.UTF8, "application/x-www-form-urlencoded");
@@ -759,7 +755,6 @@ namespace Sample.Winform
             string obterPessoaContent = obterPessoaResponse.Content.ReadAsStringAsync().Result;
             if (obterPessoaContent == null || obterPessoaContent.Equals(""))
             {
-                MessageBox.Show("Pessoa não cadastrada!");
                 return null;
             }
             JObject pessoaObj = JObject.Parse(obterPessoaContent);
@@ -785,7 +780,7 @@ namespace Sample.Winform
                     ""IdLogradouro"":""" + enderecoObj["IdLogradouro"] + @""" ,
                     ""Logradouro"": """ + enderecoObj["Logradouro"] + @""" ,
                     ""Numero"": """ + textBoxNumero.Text + @""" ,
-                    ""Complemento"": """ + $"{textBoxEndereco.Text} {textBoxNumero.Text}, {textBoxBairro.Text}"  + @""" ,
+                    ""Complemento"": """ + $"{textBoxEndereco.Text} {textBoxNumero.Text}, {textBoxBairro.Text}" + @""" ,
                     ""IdEnderecamentoPostal"": """ + enderecoObj["Id"] + @""" ,
                     ""Cep"": """ + enderecoObj["Cep"] + @""" ,
                     ""Municipio"": """ + enderecoObj["NomeMunicipio"] + @""" ,
@@ -973,6 +968,9 @@ namespace Sample.Winform
             try
             {
                 JObject pessoaObj = consultarPessoa();
+
+                if (pessoaObj == null) MessageBox.Show("Pessoa não cadastrada!");
+
                 if (pessoaObj != null && pessoaObj["EnderecosPessoa"] != null && pessoaObj["EnderecosPessoa"].Type == JTokenType.Array && pessoaObj["EnderecosPessoa"].Any())
                 {
                     textBoxCEP.Text = pessoaObj["EnderecosPessoa"][0]["Cep"].ToString();
@@ -1014,6 +1012,16 @@ namespace Sample.Winform
             {
                 MessageBox.Show("Erro: " + ex.Message);
             }
+        }
+
+        private void textBoxCPF_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter) btnPesquisarPessoa_Click(null, null);
+        }
+
+        private void textBoxCEP_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter) btnPesquisarEndereco_Click(null,null);
         }
     }
 }

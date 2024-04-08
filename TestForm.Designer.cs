@@ -46,6 +46,7 @@
             this.groupBoxEstado = new System.Windows.Forms.GroupBox();
             this.textBoxEstado = new System.Windows.Forms.TextBox();
             this.groupBoxCEP = new System.Windows.Forms.GroupBox();
+            this.btnPesquisarEndereco = new System.Windows.Forms.Button();
             this.textBoxCEP = new System.Windows.Forms.TextBox();
             this.tableLayoutPanelDescricao = new System.Windows.Forms.TableLayoutPanel();
             this.groupBoxValor = new System.Windows.Forms.GroupBox();
@@ -82,7 +83,6 @@
             this.groupDepth = new System.Windows.Forms.GroupBox();
             this.comboDepth = new System.Windows.Forms.ComboBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnPesquisarEndereco = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanelContainer.SuspendLayout();
@@ -318,6 +318,17 @@
             this.groupBoxCEP.TabStop = false;
             this.groupBoxCEP.Text = "CEP";
             // 
+            // btnPesquisarEndereco
+            // 
+            this.btnPesquisarEndereco.BackColor = System.Drawing.Color.LightBlue;
+            this.btnPesquisarEndereco.Location = new System.Drawing.Point(69, 0);
+            this.btnPesquisarEndereco.Name = "btnPesquisarEndereco";
+            this.btnPesquisarEndereco.Size = new System.Drawing.Size(29, 18);
+            this.btnPesquisarEndereco.TabIndex = 1;
+            this.btnPesquisarEndereco.TabStop = false;
+            this.btnPesquisarEndereco.UseVisualStyleBackColor = false;
+            this.btnPesquisarEndereco.Click += new System.EventHandler(this.btnPesquisarEndereco_Click);
+            // 
             // textBoxCEP
             // 
             this.textBoxCEP.Cursor = System.Windows.Forms.Cursors.IBeam;
@@ -328,6 +339,7 @@
             this.textBoxCEP.Name = "textBoxCEP";
             this.textBoxCEP.Size = new System.Drawing.Size(127, 30);
             this.textBoxCEP.TabIndex = 0;
+            this.textBoxCEP.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxCEP_KeyPress);
             // 
             // tableLayoutPanelDescricao
             // 
@@ -484,6 +496,7 @@
             this.textBoxCPF.Name = "textBoxCPF";
             this.textBoxCPF.Size = new System.Drawing.Size(127, 30);
             this.textBoxCPF.TabIndex = 1;
+            this.textBoxCPF.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxCPF_KeyPress);
             // 
             // groupBoxNome
             // 
@@ -785,17 +798,6 @@
             this.comboDepth.TabIndex = 0;
             this.comboDepth.TabStop = false;
             this.comboDepth.SelectedIndexChanged += new System.EventHandler(this.comboDepth_SelectedIndexChanged);
-            // 
-            // btnPesquisarEndereco
-            // 
-            this.btnPesquisarEndereco.BackColor = System.Drawing.Color.LightBlue;
-            this.btnPesquisarEndereco.Location = new System.Drawing.Point(69, 0);
-            this.btnPesquisarEndereco.Name = "btnPesquisarEndereco";
-            this.btnPesquisarEndereco.Size = new System.Drawing.Size(29, 18);
-            this.btnPesquisarEndereco.TabIndex = 1;
-            this.btnPesquisarEndereco.TabStop = false;
-            this.btnPesquisarEndereco.UseVisualStyleBackColor = false;
-            this.btnPesquisarEndereco.Click += new System.EventHandler(this.btnPesquisarEndereco_Click);
             // 
             // TestForm
             // 
