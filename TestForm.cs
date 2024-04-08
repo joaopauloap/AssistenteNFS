@@ -744,7 +744,7 @@ namespace Sample.Winform
             //string loginContent = await loginResponse.Content.ReadAsStringAsync();
         }
 
-        JObject consultarPessoa()
+        JObject obterPessoa()
         {
             if (textBoxCPF.Text.Length < 11) throw new Exception("CPF Inválido!");
 
@@ -850,7 +850,7 @@ namespace Sample.Winform
             string emitirNFUrl = propertiesObj["emissaoNF"]["emitirNF"].ToString();
             string emitirNFCompletedUrl = propertiesObj["emissaoNF"]["emitirNFCompleted"].ToString();
             string nfBody = propertiesObj["emissaoNF"]["body"].ToString();
-            string pessoaId = consultarPessoa()?["Id"].ToString();
+            string pessoaId = obterPessoa()?["Id"].ToString();
             JObject enderecoObj = obterEndereco();
 
             if (pessoaId == null || pessoaId.Equals(""))
@@ -936,7 +936,7 @@ namespace Sample.Winform
             return true;
         }
 
-        //TODO: Melhorar. Atualmente está abrindo a ultima NF para impressão.
+        //TODO: Melhorar especificando o Nº da NF desejada. Atualmente está abrindo a ultima NF para impressão.
         void abrirImpressaoNf()
         {
             string listarNfsUrl = propertiesObj["emissaoNF"]["listarNfs"].ToString();
@@ -961,13 +961,13 @@ namespace Sample.Winform
             Process.Start(new ProcessStartInfo(abrirNfCodUrl + codAutNf) { UseShellExecute = true });
         }
 
-        private void btnPesquisarPessoa_Click(object sender, EventArgs e)
+        private void pesquisarPessoa()
         {
             if (_client.BaseAddress == null) fazerLogin();
 
             try
             {
-                JObject pessoaObj = consultarPessoa();
+                JObject pessoaObj = obterPessoa();
 
                 if (pessoaObj == null) MessageBox.Show("Pessoa não cadastrada!");
 
@@ -995,8 +995,7 @@ namespace Sample.Winform
                 MessageBox.Show("Erro: " + ex.Message);
             }
         }
-
-        private void btnPesquisarEndereco_Click(object sender, EventArgs e)
+        private void pesquisarCEP()
         {
             if (_client.BaseAddress == null) fazerLogin();
             try
@@ -1016,12 +1015,22 @@ namespace Sample.Winform
 
         private void textBoxCPF_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter) btnPesquisarPessoa_Click(null, null);
+            if (e.KeyChar == (char)Keys.Enter) pesquisarPessoa();
         }
 
         private void textBoxCEP_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter) btnPesquisarEndereco_Click(null,null);
+            if (e.KeyChar == (char)Keys.Enter) pesquisarCEP();
+        }
+
+        private void btnPesquisarPessoa_Click(object sender, EventArgs e)
+        {
+            pesquisarPessoa();
+        }
+
+        private void btnPesquisarCEP_Click(object sender, EventArgs e)
+        {
+            pesquisarCEP();
         }
     }
 }
