@@ -17,6 +17,8 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Bson;
 using System.Diagnostics;
 using System.Security.Policy;
+using AssistenteNFS;
+using System.Collections.Generic;
 
 namespace Sample.Winform
 {
@@ -748,18 +750,59 @@ namespace Sample.Winform
         {
             if (textBoxCPF.Text.Length < 11) throw new Exception("CPF Inválido!");
 
-            string obterPessoaUrl = propertiesObj["emissaoNF"]["obterPessoa"].ToString();
-            var obterPessoaRequest = new StringContent($"documento={textBoxCPF.Text}", Encoding.UTF8, "application/x-www-form-urlencoded");
-            HttpResponseMessage obterPessoaResponse = _client.PostAsync(obterPessoaUrl, obterPessoaRequest).Result;
-            obterPessoaResponse.EnsureSuccessStatusCode();
-            string obterPessoaContent = obterPessoaResponse.Content.ReadAsStringAsync().Result;
-            if (obterPessoaContent == null || obterPessoaContent.Equals(""))
+            string obterPessoasCPFUrl = propertiesObj["emissaoNF"]["obterPessoasCPF"].ToString();
+            var obterPessoasCPFRequest = new StringContent($"query={textBoxCPF.Text}&modelname&page=1&start=0&limit=10", Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage obterPessoasCPFResponse = _client.PostAsync(obterPessoasCPFUrl, obterPessoasCPFRequest).Result;
+            obterPessoasCPFResponse.EnsureSuccessStatusCode();
+            string obterPessoasCPFContent = obterPessoasCPFResponse.Content.ReadAsStringAsync().Result;
+            JObject pessoasObj = JObject.Parse(obterPessoasCPFContent);
+            JArray pessoasArray = (JArray)pessoasObj["Dados"];
+            string selectedItem = "";
+
+            if (obterPessoasCPFContent == null || obterPessoasCPFContent.Equals(""))
             {
                 return null;
             }
-            JObject pessoaObj = JObject.Parse(obterPessoaContent);
-            textBoxNome.Text = pessoaObj["NomeRazaoSocial"].ToString();
-            return pessoaObj;
+
+            if (pessoasArray.Count() > 1)
+            {
+                MessageBox.Show("Há mais de um cadastro com o mesmo CPF!\nSelecione o cadastro desejado...");
+                using (SelectPessoa popup = new SelectPessoa())
+                {
+                    List<String> listaPessoas = new List<string>();
+                    foreach (JObject item in pessoasArray)
+                    {
+                        string nome = item["Descricao"].Value<string>();
+                        listaPessoas.Add(nome);
+                    }
+
+                    popup.Items = listaPessoas;
+
+                    if (popup.ShowDialog(this) == DialogResult.OK)
+                        selectedItem = popup.SelectedItem;
+                    else
+                        return null;
+                }
+            }
+
+            JObject pessoaSelecionada = pessoasArray.Children<JObject>()
+             .FirstOrDefault(obj => obj["Descricao"].Value<String>() == selectedItem) ?? (JObject)pessoasArray.First();
+
+            textBoxNome.Text = pessoaSelecionada["Descricao"].ToString();
+
+            string obterEnderecoPrincipalURL = propertiesObj["emissaoNF"]["obterEnderecoPrincipal"].ToString();
+            var obterEnderecoPrincipalRequest = new StringContent($"idPessoa={pessoaSelecionada["Id"]}", Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage obterEnderecoPrincipalResponse = _client.PostAsync(obterEnderecoPrincipalURL, obterEnderecoPrincipalRequest).Result;
+            obterEnderecoPrincipalResponse.EnsureSuccessStatusCode();
+            string obterEnderecoPrincipalContent = obterEnderecoPrincipalResponse.Content.ReadAsStringAsync().Result;
+
+            if (obterEnderecoPrincipalContent != "")
+            {
+                JObject enderecoPrincipal = JObject.Parse(obterEnderecoPrincipalContent);
+                pessoaSelecionada["EnderecosPessoa"] = new JArray { enderecoPrincipal };
+            }
+
+            return pessoaSelecionada;
         }
 
         string cadastrarPessoa()

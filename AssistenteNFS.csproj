@@ -135,6 +135,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SelectPessoa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectPessoa.Designer.cs">
+      <DependentUpon>SelectPessoa.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,11 +152,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="SelectPessoa.resx">
+      <DependentUpon>SelectPessoa.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestForm.resx">
       <DependentUpon>TestForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="AssistenteNFS_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
