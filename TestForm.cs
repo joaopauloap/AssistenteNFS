@@ -916,12 +916,13 @@ namespace Sample.Winform
             {
                 DateTime now = DateTime.Now;
                 string dataAtual = now.ToString("yyyy-MM-ddTHH:mm:ss");
-
+                
                 string nfJson = nfBody + @"
                 ""DataEmissao"":""" + dataAtual + @""",
                 ""Observacao"":""" + observacao.Text + @""",
                 ""IdPessoaTomador"":" + pessoaId + @",
                 ""NomeRazaoSocialTomador"":""" + textBoxNome.Text.ToUpper() + @""",
+                ""TipoPessoa"":" + (textBoxCPF.Text.Length > 11 ? 2:1) + @",
                 ""CPFCNPJTomador"":""" + textBoxCPF.Text + @""",
                 ""CepTomador"":""" + textBoxCEP.Text + @""",
                 ""IdEnderecamentoPostal"":" + enderecoObj["Id"] + @",
