@@ -759,7 +759,7 @@ namespace Sample.Winform
             JArray pessoasArray = (JArray)pessoasObj["Dados"];
             string selectedItem = "";
 
-            if (obterPessoasCPFContent == null || obterPessoasCPFContent.Equals(""))
+            if (obterPessoasCPFContent == null || obterPessoasCPFContent.Equals("") || obterPessoasCPFContent.Equals("{\"Dados\":[],\"Total\":-1}"))
             {
                 return null;
             }
