@@ -387,6 +387,7 @@
             this.textBoxValor.Name = "textBoxValor";
             this.textBoxValor.Size = new System.Drawing.Size(84, 30);
             this.textBoxValor.TabIndex = 0;
+            this.textBoxValor.KeyPress += textBoxValor_KeyPress;
             // 
             // groupBoxDescricao
             // 

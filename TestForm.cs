@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Security.Policy;
 using AssistenteNFS;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Sample.Winform
 {
@@ -699,6 +700,21 @@ namespace Sample.Winform
             return true;
         }
 
+        string fixJsonString(string value)
+        {
+            return value.Replace("\n", "\\n").Replace("\r", "\\r").Replace("\"", "\\\"");
+        }
+
+        decimal formatStringToDotDecimal(string value)
+        {
+            return decimal.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        string formatDecimalToJsonNumberString(decimal value)
+        {
+            return value.ToString("F2", CultureInfo.InvariantCulture);
+        }
+
         static async Task<string> PostHttpRequest(string url, HttpContent content)
         {
             using (HttpClient client = new HttpClient())
@@ -919,7 +935,7 @@ namespace Sample.Winform
                 
                 string nfJson = nfBody + @"
                 ""DataEmissao"":""" + dataAtual + @""",
-                ""Observacao"":""" + observacao.Text + @""",
+                ""Observacao"":""" + fixJsonString(observacao.Text) + @""",
                 ""IdPessoaTomador"":" + pessoaId + @",
                 ""NomeRazaoSocialTomador"":""" + textBoxNome.Text.ToUpper() + @""",
                 ""TipoPessoa"":" + (textBoxCPF.Text.Length > 11 ? 2:1) + @",
@@ -936,7 +952,7 @@ namespace Sample.Winform
                 ""ValorTotalServicos"":" + textBoxValor.Text + @",
                 ""ValorTotalLiquido"":" + textBoxValor.Text + @",
                 ""BaseCalculoISSQN"":" + textBoxValor.Text + @",
-                ""TotalISSQNCalculado"":" + Int32.Parse(textBoxValor.Text) * 0.05 + @",
+                ""TotalISSQNCalculado"":" + formatDecimalToJsonNumberString(formatStringToDotDecimal(textBoxValor.Text) * 0.05m) + @",
                 ""Servicos"":[
                 {
                     ""Servico"":""" + textBoxDescricao.Text + @""",
@@ -1075,6 +1091,21 @@ namespace Sample.Winform
         private void btnPesquisarCEP_Click(object sender, EventArgs e)
         {
             pesquisarCEP();
+        }
+
+        private void textBoxValor_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Permite números, ponto e Backspace
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != '\b')
+            {
+                e.Handled = true; // Impede a entrada de caracteres inválidos
+            }
+
+            // Impede mais de um ponto decimal
+            if (e.KeyChar == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                e.Handled = true;
+            }
         }
     }
 }
