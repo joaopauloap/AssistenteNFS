@@ -715,6 +715,7 @@ namespace Sample.Winform
             return value.ToString("F2", CultureInfo.InvariantCulture);
         }
 
+        //TODO Simplificar as requisições usando este metodo
         static async Task<string> PostHttpRequest(string url, HttpContent content)
         {
             using (HttpClient client = new HttpClient())
@@ -854,24 +855,38 @@ namespace Sample.Winform
             return pessoaId;
         }
 
-        //TODO: Melhorar requisição e remover delay
         JObject obterEndereco()
         {
             if (textBoxCEP.Text.Length < 8) throw new Exception("CEP inválido!");
 
             string obterEnderecoAsyncUrl = propertiesObj["emissaoNF"]["obterEnderecoAsync"].ToString();
-            //string obterEnderecoCompletedUrl = obj["emissaoNF"]["obterEnderecoCompleted"].ToString();
-            string obterEnderecoUrl = propertiesObj["emissaoNF"]["obterEndereco"].ToString();
+            string obterEnderecoCompletedUrl = propertiesObj["emissaoNF"]["obterEnderecoCompleted"].ToString();
+            string obterEnderecoUrl = propertiesObj["emissaoNF"]["obterEnderecoResult"].ToString();
             string obterMunicipioUrl = propertiesObj["emissaoNF"]["obterMunicipio"].ToString();
-            JObject enderecoObj = null;
-            JObject municipioObj = null;
+            JObject enderecoObj;
+            JObject municipioObj;
 
             //obter endereco
+
             var obterEnderecoAsyncRequest = new StringContent($"cep={textBoxCEP.Text}&permitirCepDeOutrosMunicipios=true&cadastrarCep=true", Encoding.UTF8, "application/x-www-form-urlencoded");
             HttpResponseMessage obterEnderecoAsyncResponse = _client.PostAsync(obterEnderecoAsyncUrl, obterEnderecoAsyncRequest).Result;
             obterEnderecoAsyncResponse.EnsureSuccessStatusCode();
             string obterEnderecoAsyncContent = obterEnderecoAsyncResponse.Content.ReadAsStringAsync().Result;
-            Thread.Sleep(5000); //TODO melhorar
+
+            TimeSpan timeout = TimeSpan.FromSeconds(5); // Tempo limite de 5 segundos
+            DateTime startTime = DateTime.Now;
+            Boolean isObterEnderecoCompleted = false;
+
+            while (isObterEnderecoCompleted == false && (DateTime.Now - startTime < timeout))
+            {
+                var obterEnderecoCompletedRequest = new StringContent($"id={obterEnderecoAsyncContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
+                HttpResponseMessage obterEnderecoCompletedResponse = _client.PostAsync(obterEnderecoCompletedUrl, obterEnderecoCompletedRequest).Result;
+                obterEnderecoCompletedResponse.EnsureSuccessStatusCode();
+                string obterEnderecoCompletedContent = obterEnderecoCompletedResponse.Content.ReadAsStringAsync().Result;
+                Boolean.TryParse(obterEnderecoCompletedContent, out isObterEnderecoCompleted);
+                Thread.Sleep(200);
+            }
+
             var obterEnderecoRequest = new StringContent($"id={obterEnderecoAsyncContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
             HttpResponseMessage obterEnderecoResponse = _client.PostAsync(obterEnderecoUrl, obterEnderecoRequest).Result;
             obterEnderecoResponse.EnsureSuccessStatusCode();
@@ -906,8 +921,9 @@ namespace Sample.Winform
         {
             if (_client.BaseAddress == null) fazerLogin();
 
-            string emitirNFUrl = propertiesObj["emissaoNF"]["emitirNF"].ToString();
-            string emitirNFCompletedUrl = propertiesObj["emissaoNF"]["emitirNFCompleted"].ToString();
+            string emitirNfUrl = propertiesObj["emissaoNF"]["emitirNFAsync"].ToString();
+            string emitirNfCompletedUrl = propertiesObj["emissaoNF"]["emitirNFCompleted"].ToString();
+            string emitirNfResultUrl = propertiesObj["emissaoNF"]["emitirNFResult"].ToString();
             string nfBody = propertiesObj["emissaoNF"]["body"].ToString();
             string pessoaId = obterPessoa()?["Id"].ToString();
             JObject enderecoObj = obterEndereco();
@@ -932,13 +948,13 @@ namespace Sample.Winform
             {
                 DateTime now = DateTime.Now;
                 string dataAtual = now.ToString("yyyy-MM-ddTHH:mm:ss");
-                
+
                 string nfJson = nfBody + @"
                 ""DataEmissao"":""" + dataAtual + @""",
                 ""Observacao"":""" + fixJsonString(observacao.Text) + @""",
                 ""IdPessoaTomador"":" + pessoaId + @",
                 ""NomeRazaoSocialTomador"":""" + textBoxNome.Text.ToUpper() + @""",
-                ""TipoPessoa"":" + (textBoxCPF.Text.Length > 11 ? 2:1) + @",
+                ""TipoPessoa"":" + (textBoxCPF.Text.Length > 11 ? 2 : 1) + @",
                 ""CPFCNPJTomador"":""" + textBoxCPF.Text + @""",
                 ""CepTomador"":""" + textBoxCEP.Text + @""",
                 ""IdEnderecamentoPostal"":" + enderecoObj["Id"] + @",
@@ -968,14 +984,27 @@ namespace Sample.Winform
                 if (confirmarEmissao == DialogResult.Yes)
                 {
                     var emitirNfRequest = new StringContent(nfJson, Encoding.UTF8, "application/x-www-form-urlencoded");
-                    HttpResponseMessage emitirNfResponse = _client.PostAsync(emitirNFUrl, emitirNfRequest).Result;
+                    HttpResponseMessage emitirNfResponse = _client.PostAsync(emitirNfUrl, emitirNfRequest).Result;
                     emitirNfResponse.EnsureSuccessStatusCode();
                     string emitirNfContent = emitirNfResponse.Content.ReadAsStringAsync().Result;
-                    Thread.Sleep(5000); //TODO melhorar
-                    var emitirNfCompletedRequest = new StringContent($"id={emitirNfContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
-                    HttpResponseMessage emitirNfCompletedResponse = _client.PostAsync(emitirNFCompletedUrl, emitirNfCompletedRequest).Result;
-                    emitirNfCompletedResponse.EnsureSuccessStatusCode();
-                    string nfResult = emitirNfCompletedResponse.Content.ReadAsStringAsync().Result;
+
+                    TimeSpan timeout = TimeSpan.FromSeconds(5); // Tempo limite de 5 segundos
+                    DateTime startTime = DateTime.Now;
+                    Boolean isEmitirNfCompleted = false;
+                    while (isEmitirNfCompleted == false && (DateTime.Now - startTime < timeout))
+                    {
+                        var emitirNfCompletedRequest = new StringContent($"id={emitirNfContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
+                        HttpResponseMessage emitirNfCompletedResponse = _client.PostAsync(emitirNfCompletedUrl, emitirNfCompletedRequest).Result;
+                        emitirNfCompletedResponse.EnsureSuccessStatusCode();
+                        string emitirNfCompletedContent = emitirNfCompletedResponse.Content.ReadAsStringAsync().Result;
+                        Boolean.TryParse(emitirNfCompletedContent, out isEmitirNfCompleted);
+                        Thread.Sleep(200);
+                    }
+
+                    var emitirNfResultRequest = new StringContent($"id={emitirNfContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
+                    HttpResponseMessage emitirNfResultResponse = _client.PostAsync(emitirNfResultUrl, emitirNfResultRequest).Result;
+                    emitirNfResultResponse.EnsureSuccessStatusCode();
+                    string nfResult = emitirNfResultResponse.Content.ReadAsStringAsync().Result;
                     JObject nfResultJson = JObject.Parse(nfResult);
                     // erros
                     if (nfResultJson["Dados"].Count() > 0)
@@ -997,6 +1026,7 @@ namespace Sample.Winform
         }
 
         //TODO: Melhorar especificando o Nº da NF desejada. Atualmente está abrindo a ultima NF para impressão.
+        //TODO Colocar params no properties json
         void abrirImpressaoNf()
         {
             string listarNfsUrl = propertiesObj["emissaoNF"]["listarNfs"].ToString();
