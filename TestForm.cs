@@ -20,6 +20,8 @@ using System.Security.Policy;
 using AssistenteNFS;
 using System.Collections.Generic;
 using System.Globalization;
+using AssistenteNFS.Models;
+using System.Text.Json;
 
 namespace Sample.Winform
 {
@@ -696,7 +698,7 @@ namespace Sample.Winform
             if (textBoxBairro.Text.Length < 2) { throw new Exception("Bairro inválido!"); }
             //if (textBoxNumero.Text.Length < 1) { throw new Exception("Numero do endereço inválido!"); }
             if (textBoxDescricao.Text.Length < 4) { throw new Exception("Descrição inválida!"); }
-            if (textBoxValor.Text.Length < 2) { throw new Exception("Valor inválido!"); }
+            if (textBoxValor.Text.Length < 1) { throw new Exception("Valor inválido!"); }
             return true;
         }
 
@@ -827,26 +829,27 @@ namespace Sample.Winform
             string cadastrarPessoaUrl = propertiesObj["emissaoNF"]["cadastrarPessoa"].ToString();
             JObject enderecoObj = obterEndereco();
 
-            string pessoaJson = @"{
-                    ""IdTipoPessoa"": -1,
-                    ""CpfCnpj"": """ + textBoxCPF.Text + @""",
-                    ""NomeRazaoSocial"": """ + textBoxNome.Text + @""",
-                    ""IdPaisNaturalidade"": """ + enderecoObj["IdPais"] + @""" ,
-                    ""IdEstadoNaturalidade"": """ + enderecoObj["IdEstado"] + @""" ,
-                    ""IdMunicipioNaturalidade"": """ + enderecoObj["IdMunicipio"] + @""" ,
-                    ""IdBairro"": """ + enderecoObj["IdBairro"] + @""" ,
-                    ""Bairro"": """ + enderecoObj["Bairro"] + @""" ,
-                    ""IdTipoLogradouro"":""" + enderecoObj["IdTipoLogradouro"] + @""" ,
-                    ""IdLogradouro"":""" + enderecoObj["IdLogradouro"] + @""" ,
-                    ""Logradouro"": """ + enderecoObj["Logradouro"] + @""" ,
-                    ""Numero"": """ + textBoxNumero.Text + @""" ,
-                    ""Complemento"": """ + $"{textBoxEndereco.Text} {textBoxNumero.Text}, {textBoxBairro.Text}" + @""" ,
-                    ""IdEnderecamentoPostal"": """ + enderecoObj["Id"] + @""" ,
-                    ""Cep"": """ + enderecoObj["Cep"] + @""" ,
-                    ""Municipio"": """ + enderecoObj["NomeMunicipio"] + @""" ,
-                    ""Estado"": """ + enderecoObj["NomeEstado"] + @""" ,
-                    ""IdSexo"": null,""IdTipoTelefone"": null,""Ddi"": null,""Ddd"": null,""NumeroTelefone"": null,""Ramal"": """",""Email"": """",""IdDistrito"": null,""Distrito"": """",""LocalNaturalidadeEstrangeiro"": """",""Numero"": """",""Complemento"":"""",""Pais"": ""BRASIL""
-                }";
+            Pessoa pessoa = new Pessoa();
+            pessoa.IdTipoPessoa = -1;
+            pessoa.CpfCnpj = textBoxCPF.Text;
+            pessoa.NomeRazaoSocial = textBoxNome.Text;
+            pessoa.IdPaisNaturalidade = (int)enderecoObj["IdPais"];
+            pessoa.IdEstadoNaturalidade = (int)enderecoObj["IdEstado"];
+            pessoa.IdMunicipioNaturalidade = (int)enderecoObj["IdMunicipio"];
+            pessoa.IdBairro = (int)enderecoObj["IdBairro"];
+            pessoa.Bairro = (string)enderecoObj["Bairro"];
+            pessoa.IdTipoLogradouro = (int)enderecoObj["IdTipoLogradouro"];
+            pessoa.IdTipoLogradouro = (int)enderecoObj["IdLogradouro"];
+            pessoa.Logradouro = (string)enderecoObj["Logradouro"];
+            pessoa.Numero = textBoxNumero.Text;
+            pessoa.Complemento = $"{textBoxEndereco.Text} {textBoxNumero.Text}, {textBoxBairro.Text}";
+            pessoa.IdEnderecamentoPostal = (int)enderecoObj["Id"];
+            pessoa.Cep = (string)enderecoObj["Cep"];
+            pessoa.Municipio = (string)enderecoObj["NomeMunicipio"];
+            pessoa.Estado = (string)enderecoObj["NomeEstado"];
+
+            string pessoaJson = JsonSerializer.Serialize(pessoa);
+
             var cadastrarPessoaRequest = new StringContent("values=" + pessoaJson, Encoding.UTF8, "application/x-www-form-urlencoded");
             HttpResponseMessage cadastrarPessoaResponse = _client.PostAsync(cadastrarPessoaUrl, cadastrarPessoaRequest).Result;
             cadastrarPessoaResponse.EnsureSuccessStatusCode();
@@ -875,7 +878,7 @@ namespace Sample.Winform
 
             TimeSpan timeout = TimeSpan.FromSeconds(5); // Tempo limite de 5 segundos
             DateTime startTime = DateTime.Now;
-            Boolean isObterEnderecoCompleted = false;
+            bool isObterEnderecoCompleted = false;
 
             while (isObterEnderecoCompleted == false && (DateTime.Now - startTime < timeout))
             {
@@ -884,7 +887,7 @@ namespace Sample.Winform
                 obterEnderecoCompletedResponse.EnsureSuccessStatusCode();
                 string obterEnderecoCompletedContent = obterEnderecoCompletedResponse.Content.ReadAsStringAsync().Result;
                 Boolean.TryParse(obterEnderecoCompletedContent, out isObterEnderecoCompleted);
-                Thread.Sleep(200);
+                Thread.Sleep(500);
             }
 
             var obterEnderecoRequest = new StringContent($"id={obterEnderecoAsyncContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
@@ -924,7 +927,6 @@ namespace Sample.Winform
             string emitirNfUrl = propertiesObj["emissaoNF"]["emitirNFAsync"].ToString();
             string emitirNfCompletedUrl = propertiesObj["emissaoNF"]["emitirNFCompleted"].ToString();
             string emitirNfResultUrl = propertiesObj["emissaoNF"]["emitirNFResult"].ToString();
-            string nfBody = propertiesObj["emissaoNF"]["body"].ToString();
             string pessoaId = obterPessoa()?["Id"].ToString();
             JObject enderecoObj = obterEndereco();
 
@@ -943,47 +945,46 @@ namespace Sample.Winform
             }
 
             //Emitir NF
-            //TODO: Melhorar. Adicionar modelo completo em json no properties
             if (validarCamposFinais())
             {
-                DateTime now = DateTime.Now;
-                string dataAtual = now.ToString("yyyy-MM-ddTHH:mm:ss");
+                //Props privadas
+                NotaFiscal notaFiscal = JsonSerializer.Deserialize<NotaFiscal>(propertiesObj["emissaoNF"]["privateProps"].ToString());
+                
+                notaFiscal.DataEmissao = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+                notaFiscal.Servicos = new List<Servicos>();
+                notaFiscal.Observacao = fixJsonString(observacao.Text);
+                notaFiscal.IdPessoaTomador = Int32.Parse(pessoaId);
+                notaFiscal.NomeRazaoSocialTomador = textBoxNome.Text.ToUpper();
+                notaFiscal.TipoPessoa = (textBoxCPF.Text.Length > 11 ? 2 : 1);
+                notaFiscal.CPFCNPJTomador= textBoxCPF.Text;
+                notaFiscal.CepTomador = textBoxCEP.Text;
+                notaFiscal.IdEnderecamentoPostal = (string)enderecoObj["Id"];
+                notaFiscal.IdEstado = Int32.Parse((string)enderecoObj["IdEstado"]);
+                notaFiscal.NomeEstadoTomador = (string)enderecoObj["NomeEstado"];
+                notaFiscal.SiglaEstadoTomador = ((string)enderecoObj["SiglaEstado"]).Trim();
+                notaFiscal.IdMunicipio = Int32.Parse((string)enderecoObj["IdMunicipio"]);
+                notaFiscal.CodigoIbgeMunicipioTomador = Int32.Parse((string)enderecoObj["CodigoIbge"]);
+                notaFiscal.NomeMunicipioTomador = textBoxCidade.Text;
+                notaFiscal.DescricaoEndereco = $"{textBoxEndereco.Text} - {textBoxBairro.Text}, {textBoxNumero.Text}";
+                notaFiscal.ValorTotalServicos = Decimal.Parse(textBoxValor.Text);
+                notaFiscal.ValorTotalLiquido = Decimal.Parse(textBoxValor.Text);
+                notaFiscal.BaseCalculoISSQN = Decimal.Parse(textBoxValor.Text);
+                notaFiscal.TotalISSQNCalculado = Decimal.Parse(textBoxValor.Text) * 0.05m;
 
-                string nfJson = nfBody + @"
-                ""DataEmissao"":""" + dataAtual + @""",
-                ""Observacao"":""" + fixJsonString(observacao.Text) + @""",
-                ""IdPessoaTomador"":" + pessoaId + @",
-                ""NomeRazaoSocialTomador"":""" + textBoxNome.Text.ToUpper() + @""",
-                ""TipoPessoa"":" + (textBoxCPF.Text.Length > 11 ? 2 : 1) + @",
-                ""CPFCNPJTomador"":""" + textBoxCPF.Text + @""",
-                ""CepTomador"":""" + textBoxCEP.Text + @""",
-                ""IdEnderecamentoPostal"":" + enderecoObj["Id"] + @",
-                ""IdEstado"":" + enderecoObj["IdEstado"] + @",
-                ""NomeEstadoTomador"":""" + enderecoObj["NomeEstado"] + @""",
-                ""SiglaEstadoTomador"":""" + enderecoObj["SiglaEstado"] + @""",
-                ""IdMunicipio"":" + enderecoObj["IdMunicipio"] + @",
-                ""CodigoIbgeMunicipioTomador"":" + enderecoObj["CodigoIbge"] + @",
-                ""NomeMunicipioTomador"":""" + textBoxCidade.Text + @""",
-                ""DescricaoEndereco"":""" + $"{textBoxEndereco.Text} - {textBoxBairro.Text}, {textBoxNumero.Text}" + @""",
-                ""ValorTotalServicos"":" + textBoxValor.Text + @",
-                ""ValorTotalLiquido"":" + textBoxValor.Text + @",
-                ""BaseCalculoISSQN"":" + textBoxValor.Text + @",
-                ""TotalISSQNCalculado"":" + formatDecimalToJsonNumberString(formatStringToDotDecimal(textBoxValor.Text) * 0.05m) + @",
-                ""Servicos"":[
-                {
-                    ""Servico"":""" + textBoxDescricao.Text + @""",
-                    ""ValorUnitario"":" + textBoxValor.Text + @",
-                    ""ValorBruto"":" + textBoxValor.Text + @",
-                    ""ValorLiquido"":" + textBoxValor.Text + @",
-                    ""Id"":0,""_TempId"":"""",""ValorDesconto"":0,""IdEstruturaPadraoCNAE"":null,""IdServicoLei116"":null,""DescricaoCNAE"":null,""DescricaoLei"":null,""Quantidade"":1,""FlPermiteTrocaMunInc"":false,""FlMunicipioIncidenciaTomador"":false,""IdEconomicoParceiro"":null,""IdRelacaoEconomicoParceiro"":null,""PercentualRetencao"":null,""ValorRetidoBaseCalculoISSQN"":0,""NomeRazaoSocialParceiro"":"""",""TipoPessoaParceiro"":"""",""CpfCnpjParceiro"":"""",""InscricaoMunicipalParceiro"":""""
-                }
-                ]
-                }";
+                Servicos servicos = new Servicos();
+                servicos.Servico = textBoxDescricao.Text;
+                servicos.ValorUnitario = Decimal.Parse(textBoxValor.Text);
+                servicos.ValorLiquido = Decimal.Parse(textBoxValor.Text);
+                servicos.ValorBruto = Decimal.Parse(textBoxValor.Text);
+
+                notaFiscal.Servicos.Add(servicos);
+
+                string nfJson = JsonSerializer.Serialize(notaFiscal);
 
                 DialogResult confirmarEmissao = MessageBox.Show("Confirmar emissão de nota fiscal?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirmarEmissao == DialogResult.Yes)
                 {
-                    var emitirNfRequest = new StringContent(nfJson, Encoding.UTF8, "application/x-www-form-urlencoded");
+                    var emitirNfRequest = new StringContent("action=insert&values=" + nfJson, Encoding.UTF8, "application/x-www-form-urlencoded");
                     HttpResponseMessage emitirNfResponse = _client.PostAsync(emitirNfUrl, emitirNfRequest).Result;
                     emitirNfResponse.EnsureSuccessStatusCode();
                     string emitirNfContent = emitirNfResponse.Content.ReadAsStringAsync().Result;
@@ -998,7 +999,7 @@ namespace Sample.Winform
                         emitirNfCompletedResponse.EnsureSuccessStatusCode();
                         string emitirNfCompletedContent = emitirNfCompletedResponse.Content.ReadAsStringAsync().Result;
                         Boolean.TryParse(emitirNfCompletedContent, out isEmitirNfCompleted);
-                        Thread.Sleep(200);
+                        Thread.Sleep(500);
                     }
 
                     var emitirNfResultRequest = new StringContent($"id={emitirNfContent}", Encoding.UTF8, "application/x-www-form-urlencoded");
