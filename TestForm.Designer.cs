@@ -46,7 +46,6 @@
             this.groupBoxEstado = new System.Windows.Forms.GroupBox();
             this.textBoxEstado = new System.Windows.Forms.TextBox();
             this.groupBoxCEP = new System.Windows.Forms.GroupBox();
-            this.btnPesquisarCEP = new System.Windows.Forms.RadioButton();
             this.textBoxCEP = new System.Windows.Forms.TextBox();
             this.tableLayoutPanelDescricao = new System.Windows.Forms.TableLayoutPanel();
             this.groupBoxValor = new System.Windows.Forms.GroupBox();
@@ -58,7 +57,6 @@
             this.btnEmitir = new System.Windows.Forms.Button();
             this.tableLayoutPanelCPF = new System.Windows.Forms.TableLayoutPanel();
             this.groupBoxCPF = new System.Windows.Forms.GroupBox();
-            this.btnPesquisarPessoa = new System.Windows.Forms.RadioButton();
             this.textBoxCPF = new System.Windows.Forms.TextBox();
             this.groupBoxNome = new System.Windows.Forms.GroupBox();
             this.textBoxNome = new System.Windows.Forms.TextBox();
@@ -83,6 +81,8 @@
             this.groupDepth = new System.Windows.Forms.GroupBox();
             this.comboDepth = new System.Windows.Forms.ComboBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanelContainer.SuspendLayout();
@@ -308,7 +308,7 @@
             // 
             // groupBoxCEP
             // 
-            this.groupBoxCEP.Controls.Add(this.btnPesquisarCEP);
+            this.groupBoxCEP.Controls.Add(this.label2);
             this.groupBoxCEP.Controls.Add(this.textBoxCEP);
             this.groupBoxCEP.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxCEP.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -320,21 +320,6 @@
             this.groupBoxCEP.TabIndex = 2;
             this.groupBoxCEP.TabStop = false;
             this.groupBoxCEP.Text = "CEP";
-            // 
-            // btnPesquisarCEP
-            // 
-            this.btnPesquisarCEP.AutoSize = true;
-            this.btnPesquisarCEP.BackColor = System.Drawing.Color.Transparent;
-            this.btnPesquisarCEP.Checked = true;
-            this.btnPesquisarCEP.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPesquisarCEP.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnPesquisarCEP.Location = new System.Drawing.Point(51, 3);
-            this.btnPesquisarCEP.Name = "btnPesquisarCEP";
-            this.btnPesquisarCEP.Size = new System.Drawing.Size(17, 16);
-            this.btnPesquisarCEP.TabIndex = 3;
-            this.btnPesquisarCEP.TabStop = true;
-            this.btnPesquisarCEP.UseVisualStyleBackColor = false;
-            this.btnPesquisarCEP.Click += new System.EventHandler(this.btnPesquisarCEP_Click);
             // 
             // textBoxCEP
             // 
@@ -387,7 +372,6 @@
             this.textBoxValor.Name = "textBoxValor";
             this.textBoxValor.Size = new System.Drawing.Size(84, 30);
             this.textBoxValor.TabIndex = 0;
-            this.textBoxValor.KeyPress += textBoxValor_KeyPress;
             // 
             // groupBoxDescricao
             // 
@@ -472,7 +456,7 @@
             // 
             // groupBoxCPF
             // 
-            this.groupBoxCPF.Controls.Add(this.btnPesquisarPessoa);
+            this.groupBoxCPF.Controls.Add(this.label1);
             this.groupBoxCPF.Controls.Add(this.textBoxCPF);
             this.groupBoxCPF.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxCPF.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -484,21 +468,6 @@
             this.groupBoxCPF.TabIndex = 0;
             this.groupBoxCPF.TabStop = false;
             this.groupBoxCPF.Text = "CPF/CNPJ";
-            // 
-            // btnPesquisarPessoa
-            // 
-            this.btnPesquisarPessoa.AutoSize = true;
-            this.btnPesquisarPessoa.BackColor = System.Drawing.Color.Transparent;
-            this.btnPesquisarPessoa.Checked = true;
-            this.btnPesquisarPessoa.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPesquisarPessoa.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnPesquisarPessoa.Location = new System.Drawing.Point(102, 2);
-            this.btnPesquisarPessoa.Name = "btnPesquisarPessoa";
-            this.btnPesquisarPessoa.Size = new System.Drawing.Size(17, 16);
-            this.btnPesquisarPessoa.TabIndex = 2;
-            this.btnPesquisarPessoa.TabStop = true;
-            this.btnPesquisarPessoa.UseVisualStyleBackColor = false;
-            this.btnPesquisarPessoa.Click += new System.EventHandler(this.btnPesquisarPessoa_Click);
             // 
             // textBoxCPF
             // 
@@ -813,6 +782,28 @@
             this.comboDepth.TabStop = false;
             this.comboDepth.SelectedIndexChanged += new System.EventHandler(this.comboDepth_SelectedIndexChanged);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 4.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(98, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(37, 9);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "ENTER";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 4.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(49, 8);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(37, 9);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "ENTER";
+            // 
             // TestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -922,8 +913,8 @@
         private System.Windows.Forms.TextBox textBoxNumero;
         private System.Windows.Forms.GroupBox groupBoxBairro;
         private System.Windows.Forms.TextBox textBoxBairro;
-        private System.Windows.Forms.RadioButton btnPesquisarPessoa;
-        private System.Windows.Forms.RadioButton btnPesquisarCEP;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

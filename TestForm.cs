@@ -596,6 +596,7 @@ namespace Sample.Winform
                 }
             }
             comboBox1.SelectedIndex = 0;
+            textBoxCPF.Focus();
         }
         private Image CropImage(Image img, Rectangle rect)
         {
@@ -840,8 +841,8 @@ namespace Sample.Winform
             pessoa.IdMunicipioNaturalidade = (int)enderecoObj["IdMunicipio"];
             pessoa.IdBairro = (int)enderecoObj["IdBairro"];
             pessoa.Bairro = (string)enderecoObj["Bairro"];
-            pessoa.IdTipoLogradouro = (int)enderecoObj["IdTipoLogradouro"];
-            pessoa.IdTipoLogradouro = (int)enderecoObj["IdLogradouro"];
+            pessoa.IdTipoLogradouro = (int?)enderecoObj["IdTipoLogradouro"]??0;
+            pessoa.IdLogradouro = (int?)enderecoObj["IdLogradouro"];
             pessoa.Logradouro = (string)enderecoObj["Logradouro"];
             pessoa.Numero = textBoxNumero.Text;
             pessoa.Complemento = $"{textBoxEndereco.Text} {textBoxNumero.Text}, {textBoxBairro.Text}";
