@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using AssistenteNFS.Models;
 using System.Text.Json;
+using CpfLibrary;
 
 namespace Sample.Winform
 {
@@ -767,7 +768,7 @@ namespace Sample.Winform
 
         JObject obterPessoa()
         {
-            if (textBoxCPF.Text.Length < 11) throw new Exception("CPF Inválido!");
+            if (textBoxCPF.Text.Length < 11 || !Cpf.Check(textBoxCPF.Text)) throw new Exception("CPF Inválido!");
 
             string obterPessoasCPFUrl = propertiesObj["emissaoNF"]["obterPessoasCPF"].ToString();
             var obterPessoasCPFRequest = new StringContent($"query={textBoxCPF.Text}&modelname&page=1&start=0&limit=10", Encoding.UTF8, "application/x-www-form-urlencoded");
@@ -808,6 +809,7 @@ namespace Sample.Winform
              .FirstOrDefault(obj => obj["Descricao"].Value<String>() == selectedItem) ?? (JObject)pessoasArray.First();
 
             textBoxNome.Text = pessoaSelecionada["Descricao"].ToString();
+            textBoxCEP.Focus();
 
             string obterEnderecoPrincipalURL = propertiesObj["emissaoNF"]["obterEnderecoPrincipal"].ToString();
             var obterEnderecoPrincipalRequest = new StringContent($"idPessoa={pessoaSelecionada["Id"]}", Encoding.UTF8, "application/x-www-form-urlencoded");
@@ -917,6 +919,7 @@ namespace Sample.Winform
             textBoxCEP.Text = textBoxCEP.Text.Replace(" - ", "");
             textBoxEstado.Text = enderecoObj["NomeEstado"].ToString();
             textBoxCidade.Text = enderecoObj["NomeMunicipio"].ToString().ToUpper();
+            textBoxEndereco.Focus();
 
             return enderecoObj;
         }
