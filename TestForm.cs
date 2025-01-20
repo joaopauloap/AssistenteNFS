@@ -839,7 +839,7 @@ namespace Sample.Winform
             pessoa.IdPaisNaturalidade = (int)enderecoObj["IdPais"];
             pessoa.IdEstadoNaturalidade = (int)enderecoObj["IdEstado"];
             pessoa.IdMunicipioNaturalidade = (int)enderecoObj["IdMunicipio"];
-            pessoa.IdBairro = (int)enderecoObj["IdBairro"];
+            pessoa.IdBairro = (int?)enderecoObj["IdBairro"]??0;
             pessoa.Bairro = (string)enderecoObj["Bairro"];
             pessoa.IdTipoLogradouro = (int?)enderecoObj["IdTipoLogradouro"]??0;
             pessoa.IdLogradouro = (int?)enderecoObj["IdLogradouro"];
