@@ -706,7 +706,7 @@ namespace Sample.Winform
 
         string fixJsonString(string value)
         {
-            return value.Replace("\n", "\\n").Replace("\r", "\\r").Replace("\"", "\\\"");
+            return value.Replace("\r\n", "\n").Replace("\r", "\n");
         }
 
         decimal formatStringToDotDecimal(string value)
