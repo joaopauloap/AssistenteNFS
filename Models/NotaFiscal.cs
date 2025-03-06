@@ -68,7 +68,7 @@ namespace AssistenteNFS.Models
         public bool ImunePrestador { get; set; }
         public bool OptanteSimplesNacionalPrestador { get; set; }
         public bool ImpedidoRecolherISSQNPeloSimplesNacionalPrestador { get; set; }
-        public int SimplesNacionalAliquotaISSQN { get; set; }
+        public decimal SimplesNacionalAliquotaISSQN { get; set; }
         public int? PercentualBeneficio { get; set; }
         public int? ChaveDigital { get; set; }
         public int IdUnidadeGestora { get; set; }

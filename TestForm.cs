@@ -839,9 +839,9 @@ namespace Sample.Winform
             pessoa.IdPaisNaturalidade = (int)enderecoObj["IdPais"];
             pessoa.IdEstadoNaturalidade = (int)enderecoObj["IdEstado"];
             pessoa.IdMunicipioNaturalidade = (int)enderecoObj["IdMunicipio"];
-            pessoa.IdBairro = (int?)enderecoObj["IdBairro"]??0;
+            pessoa.IdBairro = (int?)enderecoObj["IdBairro"] ?? 0;
             pessoa.Bairro = (string)enderecoObj["Bairro"];
-            pessoa.IdTipoLogradouro = (int?)enderecoObj["IdTipoLogradouro"]??0;
+            pessoa.IdTipoLogradouro = (int?)enderecoObj["IdTipoLogradouro"] ?? 0;
             pessoa.IdLogradouro = (int?)enderecoObj["IdLogradouro"];
             pessoa.Logradouro = (string)enderecoObj["Logradouro"];
             pessoa.Numero = textBoxNumero.Text;
@@ -953,14 +953,14 @@ namespace Sample.Winform
             {
                 //Props privadas
                 NotaFiscal notaFiscal = JsonSerializer.Deserialize<NotaFiscal>(propertiesObj["emissaoNF"]["privateProps"].ToString());
-                
+
                 notaFiscal.DataEmissao = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
                 notaFiscal.Servicos = new List<Servicos>();
                 notaFiscal.Observacao = fixJsonString(observacao.Text);
                 notaFiscal.IdPessoaTomador = Int32.Parse(pessoaId);
                 notaFiscal.NomeRazaoSocialTomador = textBoxNome.Text.ToUpper();
                 notaFiscal.TipoPessoa = (textBoxCPF.Text.Length > 11 ? 2 : 1);
-                notaFiscal.CPFCNPJTomador= textBoxCPF.Text;
+                notaFiscal.CPFCNPJTomador = textBoxCPF.Text;
                 notaFiscal.CepTomador = textBoxCEP.Text;
                 notaFiscal.IdEnderecamentoPostal = (string)enderecoObj["Id"];
                 notaFiscal.IdEstado = Int32.Parse((string)enderecoObj["IdEstado"]);
@@ -973,7 +973,7 @@ namespace Sample.Winform
                 notaFiscal.ValorTotalServicos = Decimal.Parse(textBoxValor.Text);
                 notaFiscal.ValorTotalLiquido = Decimal.Parse(textBoxValor.Text);
                 notaFiscal.BaseCalculoISSQN = Decimal.Parse(textBoxValor.Text);
-                notaFiscal.TotalISSQNCalculado = Decimal.Parse(textBoxValor.Text) * 0.05m;
+                notaFiscal.TotalISSQNCalculado = Decimal.Parse(textBoxValor.Text) * (notaFiscal.AliquotaISSQN / 100);
 
                 Servicos servicos = new Servicos();
                 servicos.Servico = textBoxDescricao.Text;
